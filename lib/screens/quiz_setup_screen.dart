@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
-import '../services/quiz_generator.dart';
+import '../services/services.dart';
 import 'quiz_screen.dart';
 
 class QuizSetupScreen extends StatefulWidget {
@@ -30,10 +30,20 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
 
   void _generateQuiz() async {
     if (!QuizGenerator.canGenerateQuiz(appState.vocabularyList, _questionCount)) {
+      // Play error sound if enabled
+      if (appState.audioEnabled) {
+        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+      }
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cannot generate quiz with current settings')),
       );
       return;
+    }
+
+    // Play click sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
     }
 
     setState(() {
@@ -60,6 +70,10 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
         );
       }
     } catch (e) {
+      // Play error sound if enabled
+      if (appState.audioEnabled) {
+        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error creating quiz: ${e.toString()}')),

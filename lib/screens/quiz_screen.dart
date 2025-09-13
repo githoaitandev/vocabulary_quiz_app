@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import '../models/models.dart';
+import '../services/services.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -52,13 +53,25 @@ class _QuizScreenState extends State<QuizScreen> {
     super.dispose();
   }
 
-  void _selectAnswer(String answer) {
+  void _selectAnswer(String answer) async {
+    final isCorrect = answer == quizSession!.currentQuestion!.correctAnswer;
+    
     setState(() {
       _selectedAnswer = answer;
       _showAnswerFeedback = true;
-      _isAnswerCorrect = answer == quizSession!.currentQuestion!.correctAnswer;
+      _isAnswerCorrect = isCorrect;
     });
+    
     quizSession!.answerCurrentQuestion(answer);
+    
+    // Play audio feedback if enabled
+    if (appState.audioEnabled) {
+      if (isCorrect) {
+        await AudioService().playFeedback(AudioFeedbackType.correct);
+      } else {
+        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+      }
+    }
   }
 
   void _nextQuestion() {
@@ -110,11 +123,17 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  void _submitQuiz() {
+  void _submitQuiz() async {
     quizSession!.finishQuiz();
     _timer?.cancel();
     
+    // Play completion sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.completion);
+    }
+    
     // Navigate to results screen
+    if (!mounted) return;
     Navigator.of(context).pushReplacementNamed('/results');
   }
 
@@ -293,7 +312,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                 ),
               );
-            }).toList(),
+            }),
             
             // Feedback message
             if (_showAnswerFeedback) ...[
@@ -469,6 +488,68 @@ class _QuizScreenState extends State<QuizScreen> {
           onPressed: _exitQuiz,
         ),
         actions: [
+          // Audio toggle
+          IconButton(
+            icon: Icon(appState.audioEnabled ? Icons.volume_up : Icons.volume_off),
+            onPressed: () async {
+              final bool newAudioState = !appState.audioEnabled;
+              setState(() {
+                appState.setAudioEnabled(newAudioState);
+              });
+              
+              // Play test sound when enabling
+              if (newAudioState) {
+                await AudioService().playFeedback(AudioFeedbackType.click);
+              }
+              
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(newAudioState ? 'Audio feedback enabled' : 'Audio feedback disabled'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+            tooltip: appState.audioEnabled ? 'Disable Audio' : 'Enable Audio',
+          ),
+          // Sound settings
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.tune),
+            tooltip: 'Sound Settings',
+            onSelected: (value) async {
+              if (value == 'toggle_custom_sounds') {
+                final bool newCustomState = !appState.useCustomSounds;
+                setState(() {
+                  appState.setUseCustomSounds(newCustomState);
+                });
+                
+                // Play test sound with new setting
+                if (appState.audioEnabled) {
+                  await AudioService().playFeedback(AudioFeedbackType.click);
+                }
+                
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(newCustomState ? 'Using custom sounds' : 'Using system sounds'),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem<String>(
+                value: 'toggle_custom_sounds',
+                child: Row(
+                  children: [
+                    Icon(appState.useCustomSounds ? Icons.check_box : Icons.check_box_outline_blank),
+                    const SizedBox(width: 8),
+                    const Text('Use Custom Sounds'),
+                  ],
+                ),
+              ),
+            ],
+          ),
           // Keyboard shortcuts info
           Tooltip(
             message: 'Keyboard shortcuts:\n1-4: Select answers\n←→: Navigate\nEnter: Next/Finish',

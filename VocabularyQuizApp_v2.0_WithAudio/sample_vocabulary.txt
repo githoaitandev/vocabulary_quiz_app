@@ -1,0 +1,20 @@
+apple	táo	I eat an apple every day
+book	sách	She is reading a book
+computer	máy tính	My computer is very fast
+dog	chó	The dog is barking loudly
+elephant	voi	The elephant is very big
+fish	cá	Fish live in water
+guitar	đàn guitar	He plays guitar very well
+house	nhà	My house has three rooms
+ice	đá	Put some ice in the drink
+juice	nước ép	Orange juice is delicious
+key	chìa khóa	I lost my house key
+lamp	đèn	Turn on the lamp please
+mountain	núi	The mountain is very high
+notebook	vở ghi chép	Write it in your notebook
+ocean	đại dương	The ocean is blue and deep
+pencil	bút chì	Use a pencil to draw
+question	câu hỏi	Ask me a question
+river	sông	The river flows to the sea
+sun	mặt trời	The sun is shining bright
+tree	cây	Plant a tree in the garden

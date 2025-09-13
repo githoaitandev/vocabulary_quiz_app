@@ -9,12 +9,12 @@ class VocabularyItem {
     this.example,
   });
 
-  /// Parse từ format: word<tab>meaning | example
+  /// Parse từ format: word[TAB]meaning | example
   /// Ví dụ: "attend a meeting\ttham dự cuộc họp | All department heads must attend..."
   factory VocabularyItem.fromTabSeparated(String line) {
     final parts = line.split('\t');
     if (parts.length < 2) {
-      throw FormatException('Invalid format: expected word<tab>meaning');
+      throw FormatException('Invalid format: expected word[TAB]meaning');
     }
 
     final word = parts[0].trim();

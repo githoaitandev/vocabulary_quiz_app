@@ -22,8 +22,10 @@
 - **Import từ vựng**: Hỗ trợ import từ file text với format tùy chỉnh
 - **Quiz tương tác**: Tạo quiz với nhiều tùy chọn (Word→Meaning, Meaning→Word)
 - **Phản hồi màu sắc**: Visual feedback ngay lập tức cho đáp án đúng/sai
+- **🎧 Audio feedback**: System sounds và custom audio files cho quiz interactions
 - **Review system**: Xem lại các câu trả lời sai
 - **Thống kê**: Theo dõi tiến độ và performance
+- **Keyboard shortcuts**: Hỗ trợ điều khiển bằng phím tắt
 
 ### 💻 Technical Stack
 
@@ -32,6 +34,8 @@
 - **Platform**: Windows Desktop
 - **Architecture**: Layered Architecture + Singleton Pattern
 - **State Management**: setState (Native Flutter)
+- **Audio**: audioplayers package + SystemSound API
+- **File Handling**: file_picker + path_provider packages
 
 ---
 
@@ -78,7 +82,8 @@ lib/
 ├── services/                    # Business logic layer
 │   ├── services.dart           # Export file
 │   ├── vocabulary_parser.dart  # File parsing & validation
-│   └── quiz_generator.dart     # Quiz generation logic
+│   ├── quiz_generator.dart     # Quiz generation logic
+│   └── audio_service.dart      # Audio feedback management
 ├── screens/                     # UI screens (main app flows)
 │   ├── home_screen.dart        # Main dashboard
 │   ├── import_screen.dart      # Vocabulary import interface
@@ -221,6 +226,31 @@ widgets/ → models/ (for data display)
 - **Configuration**: `QuizConfig` class với preset options
 - **Validation**: Ensure minimum vocabulary requirement (4+ items)
 
+#### `AudioService` - Audio Feedback Management (Singleton)
+
+- **Purpose**: Handle audio feedback cho quiz interactions
+- **Key Features**:
+
+  - **System sounds**: Windows SystemSoundType integration
+  - **Custom sounds**: MP3/WAV/M4A file support từ assets
+  - **Fallback mechanism**: Automatic fallback to system sounds if custom files fail
+  - **Global controls**: Enable/disable audio feedback
+
+- **Sound Types**:
+
+  - `correct`: Success sound cho correct answers
+  - `incorrect`: Error/buzzer sound cho wrong answers
+  - `completion`: Celebration sound khi hoàn thành quiz
+  - `click`: Navigation click sounds
+
+- **Configuration**:
+
+  - `audioEnabled`: Global audio toggle
+  - `useCustomSounds`: Switch between system và custom sounds
+  - Volume control và stop functionality
+
+- **Error Handling**: Silent failures với fallback để prevent crashes
+
 ### 3. 📊 Model Layer (Data & State)
 
 #### `AppState` - Global State Management (Singleton)
@@ -232,6 +262,7 @@ widgets/ → models/ (for data display)
   - Quiz session lifecycle management
   - Memory management (dispose patterns)
   - Data persistence coordination
+  - Audio preferences storage (audio enabled/disabled state)
 
 - **Memory Management**: Explicit `dispose()` methods để prevent memory leaks
 
@@ -280,6 +311,7 @@ dependencies:
   cupertino_icons: ^1.0.8 # iOS-style icons
   file_picker: ^6.0.0 # File selection dialog
   path_provider: ^2.0.0 # File system access
+  audioplayers: ^5.0.0 # Custom audio file playback
 
 dev_dependencies:
   flutter_test: sdk
@@ -291,6 +323,7 @@ dev_dependencies:
 - **Windows Desktop**: Native integration via Flutter Windows
 - **File System**: Read text files thông qua `file_picker`
 - **Clipboard**: Access system clipboard cho paste functionality
+- **Audio System**: System sounds và custom audio file playback
 
 ---
 

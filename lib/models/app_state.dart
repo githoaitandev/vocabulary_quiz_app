@@ -1,4 +1,5 @@
 import 'models.dart';
+import '../services/services.dart';
 
 /// Class quản lý toàn bộ app state trong memory
 /// Có thể clear/dispose để giải phóng memory
@@ -7,14 +8,30 @@ class AppState {
   factory AppState() => _instance;
   AppState._internal();
 
-  List<VocabularyItem> _vocabularyList = [];
+  final List<VocabularyItem> _vocabularyList = [];
   QuizSession? _currentQuizSession;
+  bool _audioEnabled = true; // Audio feedback setting
+  bool _useCustomSounds = false; // Custom vs system sounds setting
 
   /// Getter cho vocabulary list
   List<VocabularyItem> get vocabularyList => List.unmodifiable(_vocabularyList);
 
   /// Getter cho current quiz session
   QuizSession? get currentQuizSession => _currentQuizSession;
+
+  /// Audio settings
+  bool get audioEnabled => _audioEnabled;
+  void setAudioEnabled(bool enabled) {
+    _audioEnabled = enabled;
+  }
+
+  /// Custom sound settings
+  bool get useCustomSounds => _useCustomSounds;
+  void setUseCustomSounds(bool useCustom) {
+    _useCustomSounds = useCustom;
+    // Update AudioService setting
+    AudioService().setUseCustomSounds(useCustom);
+  }
 
   /// Import vocabulary từ text
   void importVocabulary(List<VocabularyItem> items) {

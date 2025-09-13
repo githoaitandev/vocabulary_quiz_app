@@ -2,8 +2,18 @@ import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/results_screen.dart';
 import 'screens/review_screen.dart';
+import 'services/audio_service.dart';
+import 'models/app_state.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize audio service
+  await AudioService().initialize();
+  
+  // Sync custom sound setting
+  AudioService().setUseCustomSounds(AppState().useCustomSounds);
+  
   runApp(const VocabularyQuizApp());
 }
 

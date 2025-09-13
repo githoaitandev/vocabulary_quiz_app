@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/models.dart';
-import '../services/vocabulary_parser.dart';
+import '../services/services.dart';
 import '../widgets/common_widgets.dart';
 
 class ImportScreen extends StatefulWidget {
@@ -32,6 +32,11 @@ class _ImportScreenState extends State<ImportScreen> {
   }
 
   Future<void> _importFromFile() async {
+    // Play click sound if enabled
+    if (AppState().audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
+    
     setState(() {
       _isLoading = true;
     });
@@ -40,6 +45,11 @@ class _ImportScreenState extends State<ImportScreen> {
       VocabularyParseResult? result = await VocabularyParser.importFromFile();
       
       if (result != null && !result.isEmpty) {
+        // Play success sound if enabled
+        if (AppState().audioEnabled) {
+          await AudioService().playFeedback(AudioFeedbackType.correct);
+        }
+        
         setState(() {
           _textController.text = _generateTextFromItems(result.items);
           _parseResult = result;
@@ -48,17 +58,30 @@ class _ImportScreenState extends State<ImportScreen> {
         if (result.hasErrors) {
           _showParseResultDialog(result);
         } else {
+          if (!mounted) return;
           SuccessSnackBar.show(context, 'Imported ${result.items.length} vocabulary items');
         }
       } else if (result != null && result.hasErrors) {
+        // Play error sound if enabled
+        if (AppState().audioEnabled) {
+          await AudioService().playFeedback(AudioFeedbackType.incorrect);
+        }
+        if (!mounted) return;
         ErrorSnackBar.show(context, result.errors.first);
       }
     } catch (e) {
+      // Play error sound if enabled
+      if (AppState().audioEnabled) {
+        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+      }
+      if (!mounted) return;
       ErrorSnackBar.show(context, 'Error importing file: ${e.toString()}');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -90,19 +113,35 @@ class _ImportScreenState extends State<ImportScreen> {
     }).join('\n');
   }
 
-  void _saveVocabulary() {
+  void _saveVocabulary() async {
     if (_parseResult != null && _parseResult!.items.isNotEmpty) {
+      // Play success sound if enabled
+      if (AppState().audioEnabled) {
+        await AudioService().playFeedback(AudioFeedbackType.correct);
+      }
+      
       AppState().importVocabulary(_parseResult!.items);
       
+      if (!mounted) return;
       SuccessSnackBar.show(context, 'Saved ${_parseResult!.items.length} vocabulary items');
       
       Navigator.of(context).pop(true); // Return true để indicate success
     } else {
+      // Play error sound if enabled
+      if (AppState().audioEnabled) {
+        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+      }
+      if (!mounted) return;
       ErrorSnackBar.show(context, 'No valid vocabulary items to save');
     }
   }
 
-  void _clearAll() {
+  void _clearAll() async {
+    // Play click sound if enabled
+    if (AppState().audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
+    
     setState(() {
       _textController.clear();
       _parseResult = null;
@@ -214,6 +253,7 @@ class _ImportScreenState extends State<ImportScreen> {
                             if (clipboardData?.text != null) {
                               _textController.text = clipboardData!.text!;
                               _parseText();
+                              if (!mounted) return;
                               SuccessSnackBar.show(context, 'Pasted from clipboard');
                             }
                           },

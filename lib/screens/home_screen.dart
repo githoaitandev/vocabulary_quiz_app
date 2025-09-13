@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../widgets/common_widgets.dart';
+import '../services/services.dart';
 import 'import_screen.dart';
 import 'quiz_setup_screen.dart';
 
@@ -24,11 +25,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToImport() async {
+    // Play click sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
+    
+    if (!mounted) return;
     final result = await Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const ImportScreen()),
     );
     
-    if (result == true) {
+    if (result == true && mounted) {
       setState(() {}); // Refresh UI after import
     }
   }
@@ -49,11 +56,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _startQuiz() async {
+    // Play click sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
+    
+    if (!mounted) return;
     final result = await Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const QuizSetupScreen()),
     );
     
-    if (result == true) {
+    if (result == true && mounted) {
       setState(() {}); // Refresh UI after quiz setup
     }
   }

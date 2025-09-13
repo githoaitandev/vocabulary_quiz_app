@@ -1,6 +1,6 @@
 # 📚 Vocabulary Quiz App
 
-Ứng dụng học từ vựng tiếng Anh thông qua các bài kiểm tra tương tác với phản hồi màu sắc ngay lập tức.
+Ứng dụng học từ vựng tiếng Anh thông qua các bài kiểm tra tương tác với phản hồi màu sắc và âm thanh ngay lập tức.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.35.3-blue.svg)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Desktop-green.svg)
@@ -11,7 +11,8 @@
 - ✅ **Import từ vựng** từ file text với format linh hoạt
 - 🎯 **Quiz tương tác** với 2 loại câu hỏi (Word→Meaning, Meaning→Word)
 - 🎨 **Phản hồi màu sắc ngay lập tức**: Xanh cho đúng, đỏ cho sai
-- 📊 **Thống kê chi tiết** theo từng loại câu hỏi
+- � **Âm thanh phản hồi**: Âm thanh khác nhau cho đúng/sai/hoàn thành
+- �📊 **Thống kê chi tiết** theo từng loại câu hỏi
 - 🔍 **Review system** để ôn tập các câu trả lời sai
 - ⌨️ **Keyboard shortcuts** để sử dụng nhanh
 - ⏱️ **Timer tùy chọn** để theo dõi thời gian
@@ -76,10 +77,13 @@ implement	thực hiện | We need to implement this feature next week.
 
 1. Đọc câu hỏi và chọn đáp án
 2. **Phản hồi ngay lập tức**:
-   - 🟢 **Màu xanh**: Đáp án đúng
-   - 🔴 **Màu đỏ**: Đáp án sai (hiển thị đáp án đúng)
-3. Nhấn **"Next"** để tiếp tục
-4. Nhấn **"Finish Quiz"** ở câu cuối
+   - 🟢 **Màu xanh + âm thanh thành công**: Đáp án đúng
+   - 🔴 **Màu đỏ + âm thanh lỗi**: Đáp án sai (hiển thị đáp án đúng)
+   - 🔊 **Âm thanh hoàn thành**: Khi kết thúc quiz
+3. **Tùy chọn âm thanh**: Nhấn nút 🔊/🔇 ở góc trên phải để bật/tắt âm thanh
+4. **Cài đặt âm thanh**: Nhấn nút ⚙️ để chọn giữa system sounds và custom sounds
+5. Nhấn **"Next"** để tiếp tục
+6. Nhấn **"Finish Quiz"** ở câu cuối
 
 ### 3. ⌨️ Phím tắt
 
@@ -140,6 +144,14 @@ Sau khi hoàn thành quiz, bạn sẽ thấy:
 
 - **Wide Screen**: Layout 2 cột cho màn hình lớn
 - **Narrow Screen**: Layout 1 cột cho màn hình nhỏ
+
+#### 🎧 Custom Audio
+
+- **System Sounds**: Sử dụng âm thanh hệ thống Windows (mặc định)
+- **Custom Sounds**: Sử dụng file âm thanh tùy chỉnh
+- **Cài đặt**: Trong quiz, nhấn nút ⚙️ → "Use Custom Sounds"
+- **File hỗ trợ**: MP3, WAV, M4A
+- **Vị trí file**: `assets/sounds/correct.mp3`, `incorrect.mp3`, `completion.mp3`
 
 ## 🎯 Tips sử dụng hiệu quả
 
@@ -348,9 +360,17 @@ lib/
    ```
 
 3. **Dependency conflicts**:
+
    ```bash
    flutter pub deps    # Check dependency tree
    flutter pub upgrade # Update packages
+   ```
+
+4. **Audio playback issues**:
+   ```bash
+   # Check custom sound file formats (MP3, WAV, M4A supported)
+   # Verify file path accessibility
+   # Audio will fallback to system sounds if custom files fail
    ```
 
 #### Development tips
@@ -359,6 +379,10 @@ lib/
 - **Debug console**: Sử dụng `print()` hoặc `debugPrint()`
 - **Flutter Inspector**: Enable trong IDE để debug widget tree
 - **Performance**: Sử dụng `flutter run --profile` để test performance
+
+#### Error resolution history
+
+Xem file [`ERROR_RESOLUTION_HISTORY.md`](ERROR_RESOLUTION_HISTORY.md) để tìm hiểu về các lỗi đã được giải quyết và kinh nghiệm rút ra.
 
 ### 📝 Code style và linting
 
@@ -466,10 +490,21 @@ flutter pub run flutter_launcher_icons:main
 - ✅ Import từ vựng từ file/text
 - ✅ Quiz với 2 loại câu hỏi
 - ✅ Visual feedback màu sắc
+- 🔊 **Audio feedback system** - Âm thanh phản hồi cho quiz interactions
 - ✅ Review system
 - ✅ Keyboard shortcuts
 - ✅ Timer và statistics
 - ✅ Responsive design
+
+#### Audio Features:
+
+- 🎵 **Correct answer sound**: SystemSoundType.click cho câu trả lời đúng
+- 🚨 **Incorrect answer sound**: SystemSoundType.alert cho câu trả lời sai
+- 🎉 **Completion sound**: Sequence of clicks khi hoàn thành quiz
+- 🔊 **Audio toggle**: Nút bật/tắt âm thanh trong quiz interface
+- ⚙️ **Global audio settings**: AudioEnabled state được lưu trong AppState
+- 🎧 **Custom sound support**: Có thể thay thế system sounds bằng custom MP3/WAV files
+- 📁 **Sound assets**: Đặt file âm thanh trong `assets/sounds/` để sử dụng custom sounds
 
 ## 🤝 Đóng góp
 

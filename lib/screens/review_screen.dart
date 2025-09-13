@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
+import '../services/services.dart';
 
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key});
@@ -35,7 +36,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
   }
 
-  void _nextIncorrectQuestion() {
+  void _nextIncorrectQuestion() async {
+    // Play click sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
     if (_currentReviewIndex < _incorrectIndices.length - 1) {
       setState(() {
         _currentReviewIndex++;
@@ -43,7 +48,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
   }
 
-  void _previousIncorrectQuestion() {
+  void _previousIncorrectQuestion() async {
+    // Play click sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
     if (_currentReviewIndex > 0) {
       setState(() {
         _currentReviewIndex--;
@@ -51,7 +60,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
   }
 
-  void _backToResults() {
+  void _backToResults() async {
+    // Play click sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
+    if (!mounted) return;
     Navigator.of(context).pop();
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
+import '../services/services.dart';
 import 'review_screen.dart';
 
 class ResultsScreen extends StatefulWidget {
@@ -24,11 +25,21 @@ class _ResultsScreenState extends State<ResultsScreen> {
     }
   }
 
-  void _startNewQuiz() {
+  void _startNewQuiz() async {
+    // Play click sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
+    if (!mounted) return;
     Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
   }
 
-  void _reviewIncorrectAnswers() {
+  void _reviewIncorrectAnswers() async {
+    // Play click sound if enabled
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.click);
+    }
+    if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const ReviewScreen()),
     );

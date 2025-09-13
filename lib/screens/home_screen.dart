@@ -25,9 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToImport() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     
     if (!mounted) return;
@@ -56,9 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _startQuiz() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     
     if (!mounted) return;

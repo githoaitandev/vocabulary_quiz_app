@@ -17,7 +17,8 @@ class QuizSession {
   /// Giải phóng memory - clear tất cả data
   void dispose() {
     questions.clear();
-    userAnswers.clear();
+    // Don't clear fixed-length list, just set to empty growable list
+    userAnswers = <String?>[];
     endTime = null;
     currentIndex = 0;
   }

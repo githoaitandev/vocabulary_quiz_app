@@ -26,18 +26,18 @@ class _ResultsScreenState extends State<ResultsScreen> {
   }
 
   void _startNewQuiz() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     if (!mounted) return;
     Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
   }
 
   void _reviewIncorrectAnswers() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     if (!mounted) return;
     Navigator.of(context).push(

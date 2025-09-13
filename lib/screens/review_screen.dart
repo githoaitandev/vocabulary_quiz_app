@@ -37,9 +37,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 
   void _nextIncorrectQuestion() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     if (_currentReviewIndex < _incorrectIndices.length - 1) {
       setState(() {
@@ -49,9 +49,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 
   void _previousIncorrectQuestion() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     if (_currentReviewIndex > 0) {
       setState(() {
@@ -61,9 +61,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 
   void _backToResults() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     if (!mounted) return;
     Navigator.of(context).pop();

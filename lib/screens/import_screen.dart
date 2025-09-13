@@ -32,9 +32,9 @@ class _ImportScreenState extends State<ImportScreen> {
   }
 
   Future<void> _importFromFile() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (AppState().audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     
     setState(() {
@@ -45,9 +45,9 @@ class _ImportScreenState extends State<ImportScreen> {
       VocabularyParseResult? result = await VocabularyParser.importFromFile();
       
       if (result != null && !result.isEmpty) {
-        // Play success sound if enabled
+        // Play success sound if enabled (system sound for operations)
         if (AppState().audioEnabled) {
-          await AudioService().playFeedback(AudioFeedbackType.correct);
+          await AudioService().playFeedback(AudioFeedbackType.systemSuccess);
         }
         
         setState(() {
@@ -62,17 +62,17 @@ class _ImportScreenState extends State<ImportScreen> {
           SuccessSnackBar.show(context, 'Imported ${result.items.length} vocabulary items');
         }
       } else if (result != null && result.hasErrors) {
-        // Play error sound if enabled
+        // Play error sound if enabled (system sound for operations)
         if (AppState().audioEnabled) {
-          await AudioService().playFeedback(AudioFeedbackType.incorrect);
+          await AudioService().playFeedback(AudioFeedbackType.systemClick);
         }
         if (!mounted) return;
         ErrorSnackBar.show(context, result.errors.first);
       }
     } catch (e) {
-      // Play error sound if enabled
+      // Play error sound if enabled (system sound for operations)
       if (AppState().audioEnabled) {
-        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+        await AudioService().playFeedback(AudioFeedbackType.systemClick);
       }
       if (!mounted) return;
       ErrorSnackBar.show(context, 'Error importing file: ${e.toString()}');
@@ -115,9 +115,9 @@ class _ImportScreenState extends State<ImportScreen> {
 
   void _saveVocabulary() async {
     if (_parseResult != null && _parseResult!.items.isNotEmpty) {
-      // Play success sound if enabled
+      // Play success sound if enabled (system sound for operations)
       if (AppState().audioEnabled) {
-        await AudioService().playFeedback(AudioFeedbackType.correct);
+        await AudioService().playFeedback(AudioFeedbackType.systemSuccess);
       }
       
       AppState().importVocabulary(_parseResult!.items);
@@ -127,9 +127,9 @@ class _ImportScreenState extends State<ImportScreen> {
       
       Navigator.of(context).pop(true); // Return true để indicate success
     } else {
-      // Play error sound if enabled
+      // Play error sound if enabled (system sound for operations)
       if (AppState().audioEnabled) {
-        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+        await AudioService().playFeedback(AudioFeedbackType.systemClick);
       }
       if (!mounted) return;
       ErrorSnackBar.show(context, 'No valid vocabulary items to save');
@@ -137,9 +137,9 @@ class _ImportScreenState extends State<ImportScreen> {
   }
 
   void _clearAll() async {
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (AppState().audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
     
     setState(() {

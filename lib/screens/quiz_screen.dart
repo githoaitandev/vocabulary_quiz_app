@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import '../models/models.dart';
 import '../services/services.dart';
+import 'home_screen.dart';
+import 'results_screen.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -25,15 +27,18 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    if (quizSession == null) {
+    final session = quizSession;
+    if (session == null) {
       // No quiz session, navigate back
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pop();
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       });
       return;
     }
     
-    _selectedAnswer = quizSession!.currentAnswer;
+    _selectedAnswer = session.currentAnswer;
     _startTimer();
   }
 
@@ -134,7 +139,16 @@ class _QuizScreenState extends State<QuizScreen> {
     
     // Navigate to results screen
     if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed('/results');
+    try {
+      Navigator.of(context).pushReplacementNamed('/results');
+    } catch (e) {
+      // Fallback: if named route fails, use direct route
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const ResultsScreen()),
+        );
+      }
+    }
   }
 
   void _exitQuiz() {
@@ -145,14 +159,30 @@ class _QuizScreenState extends State<QuizScreen> {
         content: const Text('Are you sure you want to exit? Your progress will be lost.'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              if (mounted) {
+                Navigator.of(context).pop();
+              }
+            },
             child: const Text('Continue Quiz'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              // Clean up quiz session
               appState.endCurrentQuizSession();
-              Navigator.of(context).pop(); // Close dialog
-              Navigator.of(context).pop(); // Go back to previous screen
+              
+              // Close dialog first
+              if (mounted) {
+                Navigator.of(context).pop();
+              }
+              
+              // Then navigate back to home screen, clearing all routes
+              if (mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (route) => false,
+                );
+              }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('Exit'),
@@ -169,7 +199,15 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _buildQuestionCard() {
-    final question = quizSession!.currentQuestion!;
+    final session = quizSession;
+    if (session == null) {
+      return const Center(child: Text('No quiz session available'));
+    }
+    
+    final question = session.currentQuestion;
+    if (question == null) {
+      return const Center(child: Text('No current question available'));
+    }
     
     return Card(
       elevation: 4,
@@ -453,13 +491,16 @@ class _QuizScreenState extends State<QuizScreen> {
       focusNode: FocusNode(),
       autofocus: true,
       onKeyEvent: (KeyEvent event) {
+        final session = quizSession;
+        if (session == null) return;
+        
         if (event is KeyDownEvent) {
           // Number keys 1-4 để chọn đáp án
           if (event.logicalKey.keyId >= LogicalKeyboardKey.digit1.keyId &&
               event.logicalKey.keyId <= LogicalKeyboardKey.digit4.keyId) {
             final optionIndex = event.logicalKey.keyId - LogicalKeyboardKey.digit1.keyId;
-            final question = quizSession!.currentQuestion!;
-            if (optionIndex < question.options.length) {
+            final question = session.currentQuestion;
+            if (question != null && optionIndex < question.options.length) {
               _selectAnswer(question.options[optionIndex]);
             }
           }
@@ -470,7 +511,7 @@ class _QuizScreenState extends State<QuizScreen> {
           else if (event.logicalKey == LogicalKeyboardKey.arrowRight || 
                    event.logicalKey == LogicalKeyboardKey.enter) {
             if (_selectedAnswer != null) {
-              if (quizSession!.currentIndex == quizSession!.questions.length - 1) {
+              if (session.currentIndex == session.questions.length - 1) {
                 _finishQuiz();
               } else {
                 _nextQuestion();
@@ -479,7 +520,7 @@ class _QuizScreenState extends State<QuizScreen> {
           }
         }
       },
-      child: Scaffold(
+        child: Scaffold(
       appBar: AppBar(
         title: const Text('Quiz Session'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -497,9 +538,9 @@ class _QuizScreenState extends State<QuizScreen> {
                 appState.setAudioEnabled(newAudioState);
               });
               
-              // Play test sound when enabling
+              // Play test sound when enabling (system sound for UI feedback)
               if (newAudioState) {
-                await AudioService().playFeedback(AudioFeedbackType.click);
+                await AudioService().playFeedback(AudioFeedbackType.systemClick);
               }
               
               if (!mounted) return;
@@ -523,9 +564,9 @@ class _QuizScreenState extends State<QuizScreen> {
                   appState.setUseCustomSounds(newCustomState);
                 });
                 
-                // Play test sound with new setting
+                // Play test sound with new setting (system sound for UI feedback)
                 if (appState.audioEnabled) {
-                  await AudioService().playFeedback(AudioFeedbackType.click);
+                  await AudioService().playFeedback(AudioFeedbackType.systemClick);
                 }
                 
                 if (!mounted) return;
@@ -603,7 +644,7 @@ class _QuizScreenState extends State<QuizScreen> {
           ],
         ),
       ),
-    )
-  ); // Close KeyboardListener
+      ), // Close Scaffold
+    ); // Close KeyboardListener
   }
 }

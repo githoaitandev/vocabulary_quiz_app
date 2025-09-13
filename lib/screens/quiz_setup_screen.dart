@@ -30,9 +30,9 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
 
   void _generateQuiz() async {
     if (!QuizGenerator.canGenerateQuiz(appState.vocabularyList, _questionCount)) {
-      // Play error sound if enabled
+      // Play error sound if enabled (system sound for operations)
       if (appState.audioEnabled) {
-        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+        await AudioService().playFeedback(AudioFeedbackType.systemClick);
       }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -41,9 +41,9 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
       return;
     }
 
-    // Play click sound if enabled
+    // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
-      await AudioService().playFeedback(AudioFeedbackType.click);
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
     }
 
     setState(() {
@@ -70,9 +70,9 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
         );
       }
     } catch (e) {
-      // Play error sound if enabled
+      // Play error sound if enabled (system sound for operations)
       if (appState.audioEnabled) {
-        await AudioService().playFeedback(AudioFeedbackType.incorrect);
+        await AudioService().playFeedback(AudioFeedbackType.systemClick);
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

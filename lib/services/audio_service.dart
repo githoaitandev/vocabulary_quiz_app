@@ -25,13 +25,13 @@ class AudioService {
     }
   }
 
-  /// Play correct answer sound
+  /// Play correct answer sound (quiz context - uses custom if available)
   Future<void> playCorrectSound() async {
     if (!_isEnabled || !_isInitialized) return;
     
     try {
       if (_useCustomSounds) {
-        // Play custom sound file
+        // Play custom sound file for quiz answers
         await _audioPlayer.play(AssetSource('sounds/correct.mp3'));
       } else {
         // Use system sounds
@@ -47,13 +47,13 @@ class AudioService {
     }
   }
 
-  /// Play incorrect answer sound
+  /// Play incorrect answer sound (quiz context - uses custom if available)
   Future<void> playIncorrectSound() async {
     if (!_isEnabled || !_isInitialized) return;
     
     try {
       if (_useCustomSounds) {
-        // Play custom buzzer/error sound
+        // Play custom buzzer/error sound for quiz answers
         await _audioPlayer.play(AssetSource('sounds/incorrect.mp3'));
       } else {
         // Use system alert sound
@@ -66,6 +66,28 @@ class AudioService {
       } catch (e) {
         // Silently fail
       }
+    }
+  }
+
+  /// Play system click sound only (for navigation, import, etc.)
+  Future<void> playSystemClickSound() async {
+    if (!_isEnabled) return;
+    
+    try {
+      await SystemSound.play(SystemSoundType.click);
+    } catch (e) {
+      // Silently fail
+    }
+  }
+
+  /// Play system success sound (for successful operations like import)
+  Future<void> playSystemSuccessSound() async {
+    if (!_isEnabled) return;
+    
+    try {
+      await SystemSound.play(SystemSoundType.click);
+    } catch (e) {
+      // Silently fail
     }
   }
 
@@ -95,9 +117,9 @@ class AudioService {
     }
   }
 
-  /// Play button click sound
+  /// Play button click sound (always system sound)
   Future<void> playClickSound() async {
-    if (!_isEnabled || !_isInitialized) return;
+    if (!_isEnabled) return;
     
     try {
       await SystemSound.play(SystemSoundType.click);
@@ -170,10 +192,12 @@ class AudioService {
 
 /// Audio feedback types
 enum AudioFeedbackType {
-  correct,
-  incorrect,
-  completion,
-  click,
+  correct,        // Quiz answer correct (custom sound if available)
+  incorrect,      // Quiz answer incorrect (custom sound if available) 
+  completion,     // Quiz completion
+  click,          // Button click (always system)
+  systemClick,    // System click for navigation/import
+  systemSuccess,  // System success for operations
 }
 
 /// Extension để easily play different feedback types
@@ -191,6 +215,12 @@ extension AudioFeedbackExtension on AudioService {
         break;
       case AudioFeedbackType.click:
         await playClickSound();
+        break;
+      case AudioFeedbackType.systemClick:
+        await playSystemClickSound();
+        break;
+      case AudioFeedbackType.systemSuccess:
+        await playSystemSuccessSound();
         break;
     }
   }

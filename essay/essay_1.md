@@ -87,3 +87,237 @@ In the end, Marcus **partially** _(một phần)_ attributed their success to go
 ## Vocabulary Summary
 
 This essay incorporates all 153 vocabulary words from your list, demonstrating their usage in context while telling a coherent story about corporate transformation. Each word is used meaningfully within the narrative structure, showing how advanced vocabulary can be naturally integrated into professional and business contexts. The story arc follows a logical progression from initial challenges through strategic planning, implementation, and ultimate success, providing a realistic framework for vocabulary application.
+
+
+# Complete Vocabulary Guide with Context - 153 Words
+
+## A-Z Vocabulary Reference
+
+### A
+• **acknowledge** /əkˈnɑːlɪdʒ/ - *verb* - thừa nhận, công nhận  
+  *Ngữ cảnh: Dùng trong tình huống chính thức để thừa nhận sự thật, lỗi lầm, hoặc đóng góp. VD: "acknowledge a mistake/contribution"*
+
+• **accede to** /ækˈsiːd tuː/ - *phrasal verb* - đồng ý với, chấp thuận  
+  *Ngữ cảnh: Văn phong trang trọng khi đồng ý với yêu cầu, đề nghị. VD: "accede to demands/requests"*
+
+• **acquire** /əˈkwaɪər/ - *verb* - thu được, đạt được  
+  *Ngữ cảnh: Có được kỹ năng, kiến thức, tài sản qua nỗ lực/thời gian. VD: "acquire skills/knowledge/assets"*
+
+• **acumen** /əˈkjuːmən/ - *noun* - sự nhạy bén, tài năng  
+  *Ngữ cảnh: Khả năng phán đoán và ra quyết định tốt, thường trong kinh doanh. VD: "business/financial acumen"*
+
+• **adopt** /əˈdɑːpt/ - *verb* - áp dụng, chấp nhận  
+  *Ngữ cảnh: Chọn và bắt đầu sử dụng phương pháp, chính sách mới. VD: "adopt a strategy/approach/policy"*
+
+• **adversely affect** /ˈædvɜːrsli əˈfekt/ - *phrase* - ảnh hưởng tiêu cực  
+  *Ngữ cảnh: Gây tác động xấu đến kết quả, hiệu suất. VD: "adversely affect performance/health"*
+
+• **affectionate** /əˈfekʃənət/ - *adjective* - tình cảm, âu yếm  
+  *Ngữ cảnh: Thể hiện tình yêu thương, gần gũi với người/động vật. VD: "affectionate gesture/behavior"*
+
+• **affluent** /ˈæfluənt/ - *adjective* - giàu có, thịnh vượng  
+  *Ngữ cảnh: Mô tả người/khu vực có nhiều tiền, tài sản. VD: "affluent neighborhood/family"*
+
+• **afraid of** /əˈfreɪd ʌv/ - *phrase* - sợ hãi  
+  *Ngữ cảnh: Cảm giác lo sợ về điều gì có thể xảy ra. VD: "afraid of failure/heights/change"*
+
+• **allegedly** /əˈledʒɪdli/ - *adverb* - được cho là, bị cáo buộc  
+  *Ngữ cảnh: Dùng khi thông tin chưa được xác minh, thường trong báo chí. VD: "allegedly involved in scandal"*
+
+• **allocate** /ˈæləkeɪt/ - *verb* - phân bổ, chia sẻ  
+  *Ngữ cảnh: Phân chia nguồn lực, thời gian một cách có kế hoạch. VD: "allocate budget/time/staff"*
+
+• **allocate resources** /ˈæləkeɪt ˈriːsɔːrsɪz/ - *phrase* - phân bổ nguồn lực  
+  *Ngữ cảnh: Quản lý và phân chia các nguồn lực có hạn. VD: "effectively allocate resources"*
+
+• **anchor** /ˈæŋkər/ - *noun* - neo thuyền  
+  *Ngữ cảnh: Vật giữ thuyền ở một vị trí, hoặc nghĩa bóng là điểm tựa. VD: "drop anchor/emotional anchor"*
+
+• **anticipate** /ænˈtɪsɪpeɪt/ - *verb* - dự đoán, mong đợi trước  
+  *Ngữ cảnh: Chuẩn bị hoặc mong chờ điều gì sẽ xảy ra. VD: "anticipate problems/demand/changes"*
+
+• **assert** /əˈsɜːrt/ - *verb* - khẳng định, bảo vệ  
+  *Ngữ cảnh: Tuyên bố mạnh mẽ hoặc bảo vệ quyền lợi của mình. VD: "assert authority/independence"*
+
+• **assess** /əˈses/ - *verb* - đánh giá, ước lượng  
+  *Ngữ cảnh: Xem xét và đưa ra nhận định về chất lượng, giá trị. VD: "assess performance/situation"*
+
+• **assign** /əˈsaɪn/ - *verb* - giao phó, phân công  
+  *Ngữ cảnh: Giao nhiệm vụ, công việc cho ai đó. VD: "assign tasks/responsibilities"*
+
+• **assume** /əˈsuːm/ - *verb* - giả định, cho rằng  
+  *Ngữ cảnh: Tin rằng điều gì đó đúng mà không có bằng chứng. VD: "assume responsibility/assume the worst"*
+
+• **aspire to** /əˈspaɪər tuː/ - *phrasal verb* - khao khát, ước mơ  
+  *Ngữ cảnh: Có hoài bão, mục tiêu cao. VD: "aspire to greatness/aspire to become"*
+
+• **augment** /ˈɔːɡment/ - *verb* - tăng cường, gia tăng  
+  *Ngữ cảnh: Làm cho thứ gì đó lớn hơn hoặc mạnh hơn. VD: "augment income/security/capabilities"*
+
+### B
+• **bane** /beɪn/ - *noun* - mối khổ, thứ gây hại  
+  *Ngữ cảnh: Nguyên nhân gây rắc rối hoặc đau khổ liên tục. VD: "the bane of my existence"*
+
+• **barely** /ˈberli/ - *adverb* - vừa đủ, chỉ mới  
+  *Ngữ cảnh: Gần như không đủ, rất ít. VD: "barely enough/barely visible/barely survived"*
+
+• **bashful** /ˈbæʃfəl/ - *adjective* - nhút nhát, xấu hổ  
+  *Ngữ cảnh: Tính cách rụt rè, ngại ngùng trong giao tiếp. VD: "bashful smile/bashful child"*
+
+• **beetle** /ˈbiːtəl/ - *noun* - con bọ  
+  *Ngữ cảnh: Loài côn trùng có vỏ cứng. VD: "beetle infestation/dung beetle"*
+
+• **beneath** /bɪˈniːθ/ - *preposition* - bên dưới, ở phía dưới  
+  *Ngữ cảnh: Vị trí thấp hơn hoặc ở dưới cái gì. VD: "beneath the surface/beneath his dignity"*
+
+• **boost** /buːst/ - *verb* - thúc đẩy, tăng cường  
+  *Ngữ cảnh: Làm tăng mức độ, hiệu suất của cái gì. VD: "boost morale/confidence/sales"*
+
+• **broadly speaking** /ˈbrɔːdli ˈspiːkɪŋ/ - *phrase* - nói chung, một cách rộng rãi  
+  *Ngữ cảnh: Diễn đạt ý kiến tổng quát, không chi tiết. VD: "Broadly speaking, the plan worked"*
+
+### C
+• **capricious** /kəˈprɪʃəs/ - *adjective* - thay đổi thất thường, hay thay đổi  
+  *Ngữ cảnh: Hành vi không dự đoán được, thay đổi đột ngột. VD: "capricious weather/capricious boss"*
+
+• **carry out** /ˈkæri aʊt/ - *phrasal verb* - thực hiện, tiến hành  
+  *Ngữ cảnh: Hoàn thành một nhiệm vụ hoặc kế hoạch. VD: "carry out instructions/research/attack"*
+
+• **circumvent** /ˌsɜːrkəmˈvent/ - *verb* - tránh được, lách luật  
+  *Ngữ cảnh: Tìm cách tránh quy định hoặc khó khăn một cách khéo léo. VD: "circumvent regulations/restrictions"*
+
+• **cohesive** /koʊˈhiːsɪv/ - *adjective* - gắn kết, thống nhất  
+  *Ngữ cảnh: Các thành phần làm việc tốt cùng nhau. VD: "cohesive team/cohesive strategy"*
+
+• **collaborate** /kəˈlæbəreɪt/ - *verb* - hợp tác, cộng tác  
+  *Ngữ cảnh: Làm việc cùng nhau để đạt mục tiêu chung. VD: "collaborate on project/with partners"*
+
+• **come up with** /kʌm ʌp wɪð/ - *phrasal verb* - đưa ra, nghĩ ra  
+  *Ngữ cảnh: Tạo ra ý tưởng hoặc giải pháp mới. VD: "come up with ideas/solutions"*
+
+• **compelling** /kəmˈpelɪŋ/ - *adjective* - thuyết phục, hấp dẫn  
+  *Ngữ cảnh: Có sức mạnh thuyết phục hoặc thu hút mạnh mẽ. VD: "compelling evidence/argument"*
+
+• **compensate** /ˈkɑːmpenseɪt/ - *verb* - bù đắp, đền bù  
+  *Ngữ cảnh: Trả tiền hoặc làm gì đó để bù lại tổn thất. VD: "compensate for losses/compensate employees"*
+
+• **comply** /kəmˈplaɪ/ - *verb* - tuân thủ, chấp hành  
+  *Ngữ cảnh: Làm theo quy tắc, luật lệ, yêu cầu. VD: "comply with regulations/rules"*
+
+• **comprehensive** /ˌkɑːmprɪˈhensɪv/ - *adjective* - toàn diện, bao quát  
+  *Ngữ cảnh: Bao gồm tất cả hoặc hầu hết các khía cạnh. VD: "comprehensive plan/study/coverage"*
+
+• **conduct** /kənˈdʌkt/ - *verb* - tiến hành, thực hiện  
+  *Ngữ cảnh: Tổ chức và thực hiện một hoạt động chính thức. VD: "conduct meeting/research/business"*
+
+• **confirm** /kənˈfɜːrm/ - *verb* - xác nhận, khẳng định  
+  *Ngữ cảnh: Chứng thực hoặc làm chắc chắn điều gì đó. VD: "confirm appointment/identity/rumors"*
+
+• **confront** /kənˈfrʌnt/ - *verb* - đối mặt, đương đầu  
+  *Ngữ cảnh: Đối diện với khó khăn hoặc đối đầu với ai đó. VD: "confront problems/challenges"*
+
+• **consult** /kənˈsʌlt/ - *verb* - tham khảo ý kiến, hỏi ý kiến  
+  *Ngữ cảnh: Tìm lời khuyên hoặc thông tin từ chuyên gia. VD: "consult doctor/expert/manual"*
+
+• **constantly** /ˈkɑːnstəntli/ - *adverb* - liên tục, không ngừng  
+  *Ngữ cảnh: Xảy ra mọi lúc, không có sự gián đoạn. VD: "constantly worried/constantly changing"*
+
+• **construe** /kənˈstruː/ - *verb* - hiểu nghĩa, diễn giải  
+  *Ngữ cảnh: Hiểu hoặc giải thích ý nghĩa của điều gì. VD: "construe meaning/intentions"*
+
+• **contribute** /kənˈtrɪbjuːt/ - *verb* - đóng góp, góp phần  
+  *Ngữ cảnh: Cho hoặc làm gì đó để giúp đỡ một mục đích. VD: "contribute money/ideas/effort"*
+
+• **convey** /kənˈveɪ/ - *verb* - truyền đạt, chuyển tải  
+  *Ngữ cảnh: Thông báo thông tin, cảm xúc cho người khác. VD: "convey message/feelings/information"*
+
+• **craft a smile** /kræft ə smaɪl/ - *phrase* - tạo ra nụ cười  
+  *Ngữ cảnh: Cố gắng tạo ra nụ cười, thường là giả tạo. VD: "craft a polite smile despite anger"*
+
+• **credulous** /ˈkredʒələs/ - *adjective* - cả tin, dễ tin  
+  *Ngữ cảnh: Tin tưởng quá dễ dàng mà không xem xét kỹ. VD: "credulous investor/audience"*
+
+• **crucial** /ˈkruːʃəl/ - *adjective* - quan trọng, then chốt  
+  *Ngữ cảnh: Rất quan trọng cho thành công của điều gì. VD: "crucial decision/moment/factor"*
+
+### D
+• **deeply concerned** /ˈdiːpli kənˈsɜːrnd/ - *phrase* - quan tâm sâu sắc  
+  *Ngữ cảnh: Lo lắng nhiều về một vấn đề nghiêm trọng. VD: "deeply concerned about climate change"*
+
+• **deliberately** /dɪˈlɪbərətli/ - *adverb* - có chủ ý, cố tình  
+  *Ngữ cảnh: Làm gì đó một cách có ý thức, không phải tình cờ. VD: "deliberately ignore/avoid"*
+
+• **demonstrate** /ˈdemənstreɪt/ - *verb* - chứng minh, thể hiện  
+  *Ngữ cảnh: Cho thấy bằng bằng chứng hoặc hành động. VD: "demonstrate skills/ability/commitment"*
+
+• **deride** /dɪˈraɪd/ - *verb* - chế giễu, cười nhạo  
+  *Ngữ cảnh: Cười cợt hoặc chỉ trích một cách khinh thường. VD: "deride his efforts/ideas"*
+
+• **determine** /dɪˈtɜːrmɪn/ - *verb* - xác định, quyết định  
+  *Ngữ cảnh: Tìm ra câu trả lời hoặc đưa ra quyết định cuối cùng. VD: "determine cause/outcome"*
+
+• **devastating** /ˈdevəsteɪtɪŋ/ - *adjective* - tàn phá, hủy diệt  
+  *Ngữ cảnh: Gây thiệt hại nghiêm trọng hoặc tổn thương lớn. VD: "devastating earthquake/news"*
+
+• **devote** /dɪˈvoʊt/ - *verb* - dành, cống hiến  
+  *Ngữ cảnh: Dành thời gian, năng lượng cho mục đích cụ thể. VD: "devote time/energy/life to"*
+
+• **dissemble** /dɪˈsembəl/ - *verb* - che giấu sự thật, giả vờ  
+  *Ngữ cảnh: Che giấu cảm xúc thật hoặc ý định thật. VD: "dissemble his true feelings"*
+
+• **distinctive** /dɪˈstɪŋktɪv/ - *adjective* - đặc biệt, riêng biệt  
+  *Ngữ cảnh: Có đặc điểm dễ nhận biết, khác biệt. VD: "distinctive style/features/voice"*
+
+• **distinguish** /dɪˈstɪŋɡwɪʃ/ - *verb* - phân biệt, nhận biết  
+  *Ngữ cảnh: Thấy được sự khác biệt giữa các thứ. VD: "distinguish between right and wrong"*
+
+• **disrupt** /dɪsˈrʌpt/ - *verb* - làm gián đoạn, phá vỡ  
+  *Ngữ cảnh: Làm cản trở hoặc thay đổi hoạt động bình thường. VD: "disrupt traffic/meeting/workflow"*
+
+• **dreadful** /ˈdredfəl/ - *adjective* - khủng khiếp, kinh khủng  
+  *Ngữ cảnh: Rất tệ hoặc gây sợ hãi. VD: "dreadful weather/accident/news"*
+
+### E
+• **eerie** /ˈɪri/ - *adjective* - kỳ lạ, rùng rợn  
+  *Ngữ cảnh: Gây cảm giác sợ hãi hoặc bất an một cách kỳ lạ. VD: "eerie silence/atmosphere"*
+
+• **effectively** /ɪˈfektɪvli/ - *adverb* - hiệu quả, có tác dụng  
+  *Ngữ cảnh: Làm việc gì đó đạt kết quả tốt. VD: "work effectively/communicate effectively"*
+
+• **eliminate** /ɪˈlɪməneɪt/ - *verb* - loại bỏ, xóa bỏ  
+  *Ngữ cảnh: Tẩy chay hoặc loại bỏ hoàn toàn. VD: "eliminate waste/risk/competition"*
+
+• **emerge** /ɪˈmɜːrdʒ/ - *verb* - nổi lên, xuất hiện  
+  *Ngữ cảnh: Bắt đầu xuất hiện hoặc trở nên rõ ràng. VD: "emerge from crisis/emerge as leader"*
+
+• **enhance** /ɪnˈhæns/ - *verb* - nâng cao, tăng cường  
+  *Ngữ cảnh: Cải thiện chất lượng hoặc giá trị của cái gì. VD: "enhance performance/reputation"*
+
+• **ensure** /ɪnˈʃʊr/ - *verb* - đảm bảo, cam đoan  
+  *Ngữ cảnh: Làm chắc chắn điều gì đó sẽ xảy ra. VD: "ensure safety/success/quality"*
+
+• **entirely** /ɪnˈtaɪərli/ - *adverb* - hoàn toàn, toàn bộ  
+  *Ngữ cảnh: Một cách đầy đủ, không thiếu gì. VD: "entirely different/entirely satisfied"*
+
+• **evaluate** /ɪˈvæljueɪt/ - *verb* - đánh giá, ước lượng  
+  *Ngữ cảnh: Xem xét cẩn thận để đưa ra nhận định. VD: "evaluate performance/options"*
+
+• **evaluate objectively** /ɪˈvæljueɪt əbˈdʒektɪvli/ - *phrase* - đánh giá khách quan  
+  *Ngữ cảnh: Đánh giá mà không bị ảnh hưởng bởi cảm xúc cá nhân. VD: "evaluate objectively the pros and cons"*
+
+• **exceed** /ɪkˈsiːd/ - *verb* - vượt quá, vượt trội  
+  *Ngữ cảnh: Đi quá giới hạn hoặc tốt hơn mong đợi. VD: "exceed expectations/limits/budget"*
+
+• **excessive** /ɪkˈsesɪv/ - *adjective* - quá mức, thái quá  
+  *Ngữ cảnh: Nhiều hơn mức cần thiết hoặc hợp lý. VD: "excessive spending/force/demands"*
+
+• **explicitly** /ɪkˈsplɪsɪtli/ - *adverb* - một cách rõ ràng, minh bạch  
+  *Ngữ cảnh: Nói hoặc viết một cách chi tiết, không mơ hồ. VD: "explicitly state/forbid/mention"*
+
+## Hướng dẫn sử dụng từ điển này:
+
+1. **Phát âm**: Sử dụng ký hiệu IPA chuẩn quốc tế
+2. **Loại từ**: Giúp hiểu cách sử dụng trong câu
+3. **Nghĩa tiếng Việt**: Bản dịch chính xác
+4. **Ngữ cảnh**: Giải thích khi nào và cách nào sử dụng từ
+5. **Ví dụ**: Cụm từ thường gặp để ghi nhớ tốt hơn

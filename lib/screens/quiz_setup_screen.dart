@@ -105,11 +105,15 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
         title: const Text('Quiz Setup'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+      body: appState.vocabularyCount == 0
+          ? const Center(
+              child: Text('No vocabulary available. Import vocabulary first.'),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
             // Vocabulary info
             Card(
               child: Padding(
@@ -148,47 +152,85 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
             const SizedBox(height: 16),
             
             // Preset buttons
-            const Text(
+            Text(
               'Quick Setup',
-              style: TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _usePreset(QuizConfig.small),
-                  child: const Text('Small (10)'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _usePreset(QuizConfig.medium),
-                  child: const Text('Medium (20)'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _usePreset(QuizConfig.large),
-                  child: const Text('Large (30)'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _usePreset(QuizConfig.wordFocused),
-                  child: const Text('Word Focus'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _usePreset(QuizConfig.meaningFocused),
-                  child: const Text('Meaning Focus'),
-                ),
-              ],
+            const SizedBox(height: 12),
+            
+            // Improved preset buttons layout
+            SizedBox(
+              height: 80,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: 5, // Number of presets
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final presets = [
+                    {'name': 'Small', 'desc': '10 questions', 'config': QuizConfig.small, 'icon': Icons.flash_on},
+                    {'name': 'Medium', 'desc': '20 questions', 'config': QuizConfig.medium, 'icon': Icons.quiz},
+                    {'name': 'Large', 'desc': '30 questions', 'config': QuizConfig.large, 'icon': Icons.library_books},
+                    {'name': 'Word Focus', 'desc': '80% W→M', 'config': QuizConfig.wordFocused, 'icon': Icons.abc},
+                    {'name': 'Meaning Focus', 'desc': '80% M→W', 'config': QuizConfig.meaningFocused, 'icon': Icons.translate},
+                  ];
+                  
+                  final preset = presets[index];
+                  return SizedBox(
+                    width: 100,
+                    child: Card(
+                      elevation: 2,
+                      child: InkWell(
+                        onTap: () => _usePreset(preset['config'] as QuizConfig),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                preset['icon'] as IconData,
+                                size: 24,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                preset['name'] as String,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                preset['desc'] as String,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontSize: 10,
+                                  color: Colors.grey[600],
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
             
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             
             // Custom settings
-            const Text(
+            Text(
               'Custom Settings',
-              style: TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -201,20 +243,37 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Number of Questions: $_questionCount',
-                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Number of Questions',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text(
+                          '$_questionCount',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 8),
                     Slider(
-                      value: _questionCount.toDouble(),
+                      value: _questionCount.toDouble().clamp(1, _maxQuestions > 0 ? _maxQuestions.toDouble() : 1),
                       min: 1,
-                      max: _maxQuestions.toDouble(),
-                      divisions: _maxQuestions - 1,
-                      onChanged: (value) {
+                      max: _maxQuestions > 0 ? _maxQuestions.toDouble() : 1,
+                      divisions: _maxQuestions > 1 ? _maxQuestions - 1 : 1,
+                      onChanged: _maxQuestions > 0 ? (value) {
                         setState(() {
                           _questionCount = value.round();
                         });
-                      },
+                      } : null,
+                    ),
+                    Text(
+                      'Range: 1 to $_maxQuestions available questions',
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -230,9 +289,9 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Question Type Mix',
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -257,33 +316,45 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                     Text(
                       'Word→Meaning: ${(_wordToMeaningRatio * 100).round()}% | '
                       'Meaning→Word: ${((1 - _wordToMeaningRatio) * 100).round()}%',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
               ),
             ),
             
-            const Spacer(),
+            const SizedBox(height: 32),
             
             // Generate button
-            ElevatedButton.icon(
+            ElevatedButton(
               onPressed: _isGenerating ? null : _generateQuiz,
-              icon: _isGenerating 
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.play_arrow),
-              label: Text(_isGenerating ? 'Generating Quiz...' : 'Start Quiz'),
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _isGenerating 
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Icon(Icons.play_arrow),
+                  const SizedBox(width: 8),
+                  Text(
+                    _isGenerating ? 'Generating Quiz...' : 'Start Quiz',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
             
@@ -298,6 +369,8 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 color: Colors.grey[600],
               ),
             ),
+            
+            const SizedBox(height: 16),
           ],
         ),
       ),

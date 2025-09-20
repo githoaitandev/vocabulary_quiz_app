@@ -13,16 +13,61 @@ class ResultsScreen extends StatefulWidget {
 class _ResultsScreenState extends State<ResultsScreen> {
   AppState get appState => AppState();
   QuizSession? get quizSession => appState.currentQuizSession;
+  TypingTestSession? get typingTestSession => appState.currentTypingTestSession;
+
+  bool get isQuizResult => quizSession != null && quizSession!.isCompleted;
+  bool get isTypingTestResult => typingTestSession != null && typingTestSession!.isCompleted;
 
   @override
   void initState() {
     super.initState();
-    if (quizSession == null || !quizSession!.isCompleted) {
-      // No completed quiz session, navigate back
+    if (!isQuizResult && !isTypingTestResult) {
+      // No completed session, navigate back
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
       });
+    } else {
+      // Mark vocabulary as tested
+      _markVocabularyAsTested();
     }
+  }
+
+  void _markVocabularyAsTested() {
+    if (isQuizResult && quizSession != null) {
+      // Mark vocabulary used in quiz as tested
+      final usedVocabulary = _getVocabularyFromQuiz(quizSession!);
+      appState.markVocabularyQuizTested(usedVocabulary);
+    } else if (isTypingTestResult && typingTestSession != null) {
+      // Mark vocabulary used in typing test as tested
+      final usedVocabulary = _getVocabularyFromTypingTest(typingTestSession!);
+      appState.markVocabularyTypingTested(usedVocabulary);
+    }
+  }
+
+  List<VocabularyItem> _getVocabularyFromQuiz(QuizSession session) {
+    return session.questions.map((question) {
+      if (question.type == QuestionType.wordToMeaning) {
+        return VocabularyItem(
+          word: question.questionText,
+          meaning: question.correctAnswer,
+        );
+      } else {
+        return VocabularyItem(
+          word: question.correctAnswer,
+          meaning: question.questionText,
+        );
+      }
+    }).toList();
+  }
+
+  List<VocabularyItem> _getVocabularyFromTypingTest(TypingTestSession session) {
+    return session.questions.map((typingQuestion) {
+      return VocabularyItem(
+        word: typingQuestion.correctWord,
+        meaning: typingQuestion.meaning,
+        example: typingQuestion.example,
+      );
+    }).toList();
   }
 
   void _startNewQuiz() async {
@@ -43,6 +88,43 @@ class _ResultsScreenState extends State<ResultsScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const ReviewScreen()),
     );
+  }
+
+  // Helper methods for getting results data
+  int get totalQuestions {
+    if (isQuizResult) return quizSession!.questions.length;
+    if (isTypingTestResult) return typingTestSession!.totalQuestions;
+    return 0;
+  }
+
+  int get correctCount {
+    if (isQuizResult) return quizSession!.correctCount;
+    if (isTypingTestResult) return typingTestSession!.correctCount;
+    return 0;
+  }
+
+  int get incorrectCount {
+    if (isQuizResult) return quizSession!.incorrectQuestionIndices.length;
+    if (isTypingTestResult) return typingTestSession!.incorrectCount;
+    return 0;
+  }
+
+  double get accuracyPercentage {
+    if (isQuizResult) return quizSession!.accuracyPercentage;
+    if (isTypingTestResult) return typingTestSession!.accuracyPercentage;
+    return 0.0;
+  }
+
+  Duration? get testDuration {
+    if (isQuizResult) return quizSession!.completionTime;
+    if (isTypingTestResult) return typingTestSession!.testDuration;
+    return null;
+  }
+
+  String get testType {
+    if (isQuizResult) return 'Quiz';
+    if (isTypingTestResult) return 'Typing Test';
+    return 'Test';
   }
 
   Widget _buildStatRow(String label, String value, [Color? valueColor]) {
@@ -66,41 +148,43 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (quizSession == null || !quizSession!.isCompleted) {
+    if (!isQuizResult && !isTypingTestResult) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
-    final correctCount = quizSession!.correctCount;
-    final totalCount = quizSession!.questions.length;
-    final accuracy = quizSession!.accuracyPercentage;
-    final completionTime = quizSession!.completionTime;
-    final incorrectCount = quizSession!.incorrectQuestionIndices.length;
+    final accuracy = accuracyPercentage;
+    final duration = testDuration;
 
-    // Phân tích theo loại câu hỏi
+    // Type-specific data for quiz
     int wordToMeaningCorrect = 0;
     int meaningToWordCorrect = 0;
     int wordToMeaningTotal = 0;
     int meaningToWordTotal = 0;
 
-    for (int i = 0; i < quizSession!.questions.length; i++) {
-      final question = quizSession!.questions[i];
-      final userAnswer = quizSession!.userAnswers[i];
-      final isCorrect = userAnswer != null && question.isCorrect(userAnswer);
+    if (isQuizResult) {
+      for (int i = 0; i < quizSession!.questions.length; i++) {
+        final question = quizSession!.questions[i];
+        final userAnswer = quizSession!.userAnswers[i];
 
-      if (question.type == QuestionType.wordToMeaning) {
-        wordToMeaningTotal++;
-        if (isCorrect) wordToMeaningCorrect++;
-      } else {
-        meaningToWordTotal++;
-        if (isCorrect) meaningToWordCorrect++;
+        if (question.type == QuestionType.wordToMeaning) {
+          wordToMeaningTotal++;
+          if (userAnswer != null && question.isCorrect(userAnswer)) {
+            wordToMeaningCorrect++;
+          }
+        } else {
+          meaningToWordTotal++;
+          if (userAnswer != null && question.isCorrect(userAnswer)) {
+            meaningToWordCorrect++;
+          }
+        }
       }
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quiz Results'),
+        title: Text('$testType Results'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         automaticallyImplyLeading: false,
       ),
@@ -125,7 +209,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      '$correctCount / $totalCount',
+                      '$correctCount / $totalQuestions',
                       style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -138,10 +222,10 @@ class _ResultsScreenState extends State<ResultsScreen> {
                         color: Colors.grey,
                       ),
                     ),
-                    if (completionTime != null) ...[
+                    if (duration != null) ...[
                       const SizedBox(height: 8),
                       Text(
-                        'Time: ${completionTime.inMinutes}:${(completionTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                        'Time: ${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}',
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -172,11 +256,11 @@ class _ResultsScreenState extends State<ResultsScreen> {
             const SizedBox(height: 24),
 
             // Action buttons
-            if (quizSession!.incorrectQuestionIndices.isNotEmpty) ...[
+            if (incorrectCount > 0) ...[
               ElevatedButton.icon(
                 onPressed: _reviewIncorrectAnswers,
                 icon: const Icon(Icons.rate_review),
-                label: Text('Review ${quizSession!.incorrectQuestionIndices.length} Incorrect Answers'),
+                label: Text('Review $incorrectCount Incorrect Answers'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(16),
                 ),
@@ -187,7 +271,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
             ElevatedButton.icon(
               onPressed: _startNewQuiz,
               icon: const Icon(Icons.refresh),
-              label: const Text('Start New Quiz'),
+              label: Text('Start New $testType'),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(16),
                 backgroundColor: Theme.of(context).colorScheme.primary,
@@ -204,9 +288,9 @@ class _ResultsScreenState extends State<ResultsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Quiz Summary',
-                      style: TextStyle(
+                    Text(
+                      '$testType Summary',
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -214,18 +298,18 @@ class _ResultsScreenState extends State<ResultsScreen> {
                     const SizedBox(height: 12),
                     
                     // Overall stats
-                    _buildStatRow('Total Questions', '$totalCount'),
+                    _buildStatRow('Total Questions', '$totalQuestions'),
                     _buildStatRow('Correct Answers', '$correctCount', Colors.green),
                     _buildStatRow('Incorrect Answers', '$incorrectCount', Colors.red),
                     _buildStatRow('Accuracy', '${accuracy.toStringAsFixed(1)}%', 
                       accuracy >= 80 ? Colors.green : accuracy >= 60 ? Colors.orange : Colors.red),
-                    if (completionTime != null)
-                      _buildStatRow('Completion Time', '${completionTime.inMinutes}m ${completionTime.inSeconds % 60}s'),
+                    if (duration != null)
+                      _buildStatRow('Completion Time', '${duration.inMinutes}m ${duration.inSeconds % 60}s'),
                     
                     const SizedBox(height: 12),
                     
-                    // Question type breakdown
-                    if (wordToMeaningTotal > 0 || meaningToWordTotal > 0) ...[
+                    // Question type breakdown (only for quiz)
+                    if (isQuizResult && (wordToMeaningTotal > 0 || meaningToWordTotal > 0)) ...[
                       const Divider(),
                       const Text(
                         'Performance by Question Type',

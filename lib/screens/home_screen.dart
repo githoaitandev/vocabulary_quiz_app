@@ -4,6 +4,7 @@ import '../widgets/common_widgets.dart';
 import '../services/services.dart';
 import 'import_screen.dart';
 import 'quiz_setup_screen.dart';
+import 'typing_test_setup_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -55,6 +56,86 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _showResetDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Reset Test Status'),
+        content: const Text(
+          'Choose which test statuses to reset:'
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              appState.resetQuizTestStatuses();
+              setState(() {});
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Quiz test statuses reset!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            child: const Text('Quiz Only'),
+          ),
+          TextButton(
+            onPressed: () {
+              appState.resetTypingTestStatuses();
+              setState(() {});
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Typing test statuses reset!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            child: const Text('Typing Only'),
+          ),
+          TextButton(
+            onPressed: () {
+              AppState().resetAllTestStatuses();
+              setState(() {});
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('All test statuses have been reset'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Both'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusChip(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
   void _startQuiz() async {
     // Play click sound if enabled (system sound for navigation)
     if (appState.audioEnabled) {
@@ -68,6 +149,22 @@ class _HomeScreenState extends State<HomeScreen> {
     
     if (result == true && mounted) {
       setState(() {}); // Refresh UI after quiz setup
+    }
+  }
+
+  void _startTypingTest() async {
+    // Play click sound if enabled (system sound for navigation)
+    if (appState.audioEnabled) {
+      await AudioService().playFeedback(AudioFeedbackType.systemClick);
+    }
+    
+    if (!mounted) return;
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const TypingTestSetupScreen()),
+    );
+    
+    if (result == true && mounted) {
+      setState(() {}); // Refresh UI after typing test setup
     }
   }
 
@@ -129,14 +226,43 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: appState.hasVocabulary ? Colors.green : Colors.grey,
                             ),
                             const SizedBox(width: 8),
-                            Text(
-                              appState.hasVocabulary
-                                  ? '${appState.vocabularyCount} vocabulary items loaded'
-                                  : 'No vocabulary loaded',
-                              style: TextStyle(
-                                color: appState.hasVocabulary ? Colors.green : Colors.grey,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    appState.hasVocabulary
+                                        ? '${appState.vocabularyCount} vocabulary items loaded'
+                                        : 'No vocabulary loaded',
+                                    style: TextStyle(
+                                      color: appState.hasVocabulary ? Colors.green : Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  if (appState.hasVocabulary) ...[
+                                    const SizedBox(height: 4),
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 4,
+                                      children: [
+                                        _buildStatusChip('${appState.untestedCount} untested', Colors.grey),
+                                        _buildStatusChip('${appState.quizTestedCount} quiz tested', Colors.blue),
+                                        _buildStatusChip('${appState.typingTestedCount} typing tested', Colors.orange),
+                                        _buildStatusChip('${appState.bothTestedCount} both tested', Colors.green),
+                                        if (appState.totalTestedCount > 0)
+                                          TextButton(
+                                            onPressed: _showResetDialog,
+                                            style: TextButton.styleFrom(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                              minimumSize: Size.zero,
+                                            ),
+                                            child: const Text('Reset', style: TextStyle(fontSize: 12)),
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                ],
                               ),
                             ),
                           ],
@@ -175,6 +301,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: appState.hasVocabulary ? _startTypingTest : null,
+                          icon: const Icon(Icons.keyboard),
+                          label: const Text('Typing Test'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.all(20),
+                            backgroundColor: appState.hasVocabulary ? null : Colors.grey[300],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ] else ...[
@@ -194,6 +332,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: appState.hasVocabulary ? _startQuiz : null,
                     icon: const Icon(Icons.quiz),
                     label: const Text('Start Quiz'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: appState.hasVocabulary ? null : Colors.grey[300],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  ElevatedButton.icon(
+                    onPressed: appState.hasVocabulary ? _startTypingTest : null,
+                    icon: const Icon(Icons.keyboard),
+                    label: const Text('Typing Test'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.all(16),
                       backgroundColor: appState.hasVocabulary ? null : Colors.grey[300],

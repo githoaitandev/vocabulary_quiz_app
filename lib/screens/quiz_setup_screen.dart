@@ -22,14 +22,14 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
   @override
   void initState() {
     super.initState();
-    _maxQuestions = QuizGenerator.getMaxQuestionCount(appState.vocabularyList);
+    _maxQuestions = QuizGenerator.getMaxQuestionCount(appState.vocabularyList, preferUntested: true);
     if (_questionCount > _maxQuestions) {
       _questionCount = _maxQuestions;
     }
   }
 
   void _generateQuiz() async {
-    if (!QuizGenerator.canGenerateQuiz(appState.vocabularyList, _questionCount)) {
+    if (!QuizGenerator.canGenerateQuiz(appState.vocabularyList, _questionCount, preferUntested: true)) {
       // Play error sound if enabled (system sound for operations)
       if (appState.audioEnabled) {
         await AudioService().playFeedback(AudioFeedbackType.systemClick);
@@ -58,6 +58,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
         vocabularyItems: appState.vocabularyList,
         questionCount: _questionCount,
         wordToMeaningRatio: _wordToMeaningRatio,
+        preferUntested: true,
       );
 
       // Tạo quiz session
@@ -90,6 +91,8 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
 
   void _usePreset(QuizConfig config) {
     setState(() {
+      // Refresh max questions in case vocabulary status changed
+      _maxQuestions = QuizGenerator.getMaxQuestionCount(appState.vocabularyList, preferUntested: true);
       _questionCount = config.questionCount.clamp(1, _maxQuestions);
       _wordToMeaningRatio = config.wordToMeaningRatio;
     });
@@ -123,7 +126,20 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text('Total vocabulary items: ${appState.vocabularyCount}'),
-                    Text('Maximum quiz questions: $_maxQuestions'),
+                    Text('Quiz untested: ${appState.vocabularyList.where((item) => !item.isQuizTested).length}'),
+                    Text('Quiz tested: ${appState.quizTestedCount}'),
+                    Text('Typing tested: ${appState.typingTestedCount}'),
+                    Text('Both tested: ${appState.bothTestedCount}'),
+                    const SizedBox(height: 8),
+                    Text(
+                      appState.vocabularyList.where((item) => !item.isQuizTested).isNotEmpty
+                          ? 'Quiz will prioritize quiz-untested words'
+                          : 'All words have been quiz tested - using full vocabulary',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: appState.vocabularyList.where((item) => !item.isQuizTested).isNotEmpty ? Colors.blue : Colors.orange,
+                      ),
+                    ),
                   ],
                 ),
               ),

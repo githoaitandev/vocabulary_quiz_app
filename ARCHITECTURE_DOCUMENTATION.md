@@ -21,11 +21,13 @@
 
 - **Import từ vựng**: Hỗ trợ import từ file text với format tùy chỉnh
 - **Quiz tương tác**: Tạo quiz với nhiều tùy chọn (Word→Meaning, Meaning→Word)
+- **Typing Test System**: Interactive typing test với real-time feedback và scoring
 - **Phản hồi màu sắc**: Visual feedback ngay lập tức cho đáp án đúng/sai
 - **🎧 Audio feedback**: System sounds và custom audio files cho quiz interactions
-- **Review system**: Xem lại các câu trả lời sai
-- **Thống kê**: Theo dõi tiến độ và performance
+- **Review system**: Xem lại các câu trả lời sai (cả quiz và typing test)
+- **Thống kê**: Theo dõi tiến độ và performance cho cả quiz và typing test
 - **Keyboard shortcuts**: Hỗ trợ điều khiển bằng phím tắt
+- **Test Status Management**: Quản lý trạng thái test độc lập cho quiz và typing
 
 ### 💻 Technical Stack
 
@@ -78,7 +80,8 @@ lib/
 │   ├── app_state.dart          # Global app state management
 │   ├── vocabulary_item.dart    # Vocabulary data model
 │   ├── question.dart           # Quiz question model
-│   └── quiz_session.dart       # Quiz session management
+│   ├── quiz_session.dart       # Quiz session management
+│   └── typing_test_session.dart # Typing test session management
 ├── services/                    # Business logic layer
 │   ├── services.dart           # Export file
 │   ├── vocabulary_parser.dart  # File parsing & validation
@@ -89,8 +92,10 @@ lib/
 │   ├── import_screen.dart      # Vocabulary import interface
 │   ├── quiz_setup_screen.dart  # Quiz configuration
 │   ├── quiz_screen.dart        # Quiz taking interface
-│   ├── results_screen.dart     # Quiz results display
-│   └── review_screen.dart      # Review incorrect answers
+│   ├── typing_test_setup_screen.dart # Typing test configuration
+│   ├── typing_test_screen.dart # Typing test interface
+│   ├── results_screen.dart     # Unified results display (quiz/typing)
+│   └── review_screen.dart      # Review incorrect answers (both types)
 └── widgets/                     # Reusable UI components
     ├── common_widgets.dart     # Generic widgets
     └── quiz_widgets.dart       # Quiz-specific widgets
@@ -162,26 +167,65 @@ widgets/ → models/ (for data display)
   - Progress tracking
   - Answer locking after selection
 
-##### `ResultsScreen` - Performance Analysis
+##### `TypingTestSetupScreen` - Typing Test Configuration
 
-- **Purpose**: Display quiz results với detailed analytics
-- **State**: Read-only access to completed `QuizSession`
+- **Purpose**: Configure typing test parameters trước khi start
+- **State**: Local state for typing test settings
 - **Features**:
-  - Overall performance metrics
-  - Question type breakdown (Word→Meaning vs Meaning→Word)
-  - Completion time tracking
+  - Word count selection (1 to max vocabulary)
+  - Timer enable/disable toggle
+  - Hints enable/disable toggle
+  - Preset configurations cho different skill levels
+  - Real-time validation và feedback
+
+##### `TypingTestScreen` - Interactive Typing Test
+
+- **Purpose**: Main typing test interface với real-time feedback
+- **State**: Complex local state + `TypingTestSession` management
+- **Features**:
+  - **Real-time typing feedback**:
+    - ✅ Green: Correct characters
+    - ❌ Red: Incorrect characters
+    - 💡 Hints: Show correct character positions
+  - **Scoring system**:
+    - 100 points: Perfect (no hints, no errors)
+    - 80 points: Good (used hints but no errors)
+    - 60 points: Fair (some typing errors but completed)
+    - 0 points: Skipped or incomplete
+  - Keyboard shortcuts (Enter to submit, Ctrl+Enter to skip)
+  - Progress tracking và timer
+  - Audio feedback cho completion
+
+##### `ResultsScreen` - Unified Performance Analysis
+
+- **Purpose**: Display results cho cả quiz và typing test với detailed analytics
+- **State**: Read-only access to completed sessions (QuizSession hoặc TypingTestSession)
+- **Features**:
+  - **Quiz Results**:
+    - Overall performance metrics
+    - Question type breakdown
+    - Accuracy percentages
+  - **Typing Test Results**:
+    - Average score calculation
+    - Individual word performance
+    - Typing speed và accuracy metrics
+    - Detailed breakdown với scoring explanations
+  - Unified navigation to review incorrect answers
   - Performance-based feedback messages
-  - Navigation to review incorrect answers
 
-##### `ReviewScreen` - Learning Enhancement
+##### `ReviewScreen` - Enhanced Learning Tool
 
-- **Purpose**: Review incorrect answers for learning
-- **State**: Navigation state through incorrect questions
+- **Purpose**: Review incorrect answers cho cả quiz và typing test
+- **State**: Navigation state through incorrect items
 - **Features**:
-  - Step-by-step review of wrong answers
-  - Side-by-side comparison (user answer vs correct answer)
-  - All options display with color coding
-  - Progress tracking through incorrect items
+  - **Quiz Review**: Side-by-side comparison của user vs correct answers
+  - **Typing Test Review**:
+    - Display incorrect words với correct spelling
+    - Show context (meaning và example)
+    - Display performance details (score, time, errors)
+    - Option to retry typing specific words
+  - Unified navigation experience cho both review types
+  - Progress tracking qua review items
 
 #### **Widgets (Reusable Components)**
 
@@ -260,22 +304,36 @@ widgets/ → models/ (for data display)
 
   - Vocabulary list management (CRUD operations)
   - Quiz session lifecycle management
+  - **Typing test session lifecycle management**
+  - **Test status tracking**: Independent quiz và typing test statuses
   - Memory management (dispose patterns)
   - Data persistence coordination
   - Audio preferences storage (audio enabled/disabled state)
 
+- **New Properties**:
+
+  - `isTypingTested`: Track which vocabulary items have been typing tested
+  - `typingTestedCount`: Count of typing tested items
+  - `bothTestedCount`: Count of items tested in both quiz và typing
+  - `resetTypingTestStatuses()`: Reset typing test status independently
+  - `resetQuizTestStatuses()`: Reset quiz test status independently
+  - `resetAllTestStatuses()`: Reset both types of test statuses
+
 - **Memory Management**: Explicit `dispose()` methods để prevent memory leaks
 
-#### `VocabularyItem` - Core Data Model
+#### `VocabularyItem` - Enhanced Core Data Model
 
 - **Properties**:
   - `word`: English word/phrase
   - `meaning`: Vietnamese translation
   - `example`: Optional usage example
+  - **`isQuizTested`**: Track if item has been tested in quiz
+  - **`isTypingTested`**: Track if item has been tested in typing test
 - **Features**:
   - Factory constructor cho tab-separated parsing
   - Built-in validation và error handling
   - Equality comparison support
+  - **Test status management**: Independent tracking của quiz và typing test completion
 
 #### `Question` - Quiz Question Model
 
@@ -288,18 +346,27 @@ widgets/ → models/ (for data display)
   - `isCorrect()`: Answer validation
   - `correctAnswerIndex`: Position in options array
 
-#### `QuizSession` - Session Management
+#### `TypingTestSession` - Typing Test Management (New)
 
-- **Purpose**: Track quiz progress và user interactions
+- **Purpose**: Track typing test progress và user performance
 - **State Tracking**:
 
-  - Current question index
-  - User answers array
-  - Start/end timestamps
-  - Navigation history
+  - Current word index và progress
+  - User input với real-time validation
+  - Scoring system với detailed feedback
+  - Start/end timestamps cho each word
+  - Hint usage tracking
+  - Error count và accuracy metrics
 
-- **Analytics**: Real-time calculation of accuracy, completion rate, incorrect indices
-- **Lifecycle**: Full session lifecycle từ creation đến disposal
+- **Scoring Algorithm**:
+
+  - Perfect (100): No hints used, no typing errors
+  - Good (80): Hints used but no errors
+  - Fair (60): Some typing errors but completed correctly
+  - Poor (0): Skipped hoặc incomplete
+
+- **Analytics**: Real-time calculation của average score, completion rate, incorrect words
+- **Lifecycle**: Full session lifecycle từ creation đến disposal với memory management
 
 ### 4. 🔌 External Layer
 
@@ -369,14 +436,34 @@ Navigation → QuizSession.nextQuestion() → Update UI
 Quiz completion → QuizSession.finishQuiz() → Navigate to results
 ```
 
-### 4. Review Flow
+### 4. Typing Test Flow (New)
+
+```
+User configures typing test → TypingTestSetupScreen state
+                           ↓
+User starts typing test → Navigate to TypingTestScreen
+                           ↓
+Real-time typing feedback → Character-by-character validation
+                           ↓
+Word completion → Score calculation (100/80/60/0)
+                           ↓
+Session tracking → TypingTestSession.completeWord()
+                           ↓
+Test completion → TypingTestSession.finishTest() → Navigate to results
+```
+
+### 5. Unified Review Flow (Enhanced)
 
 ```
 Results screen → User clicks review → Navigate to ReviewScreen
                                    ↓
-Load incorrect questions → ReviewScreen state initialization
+Determine review type → Quiz mistakes hoặc Typing mistakes
                                    ↓
-Step through mistakes → Display correct vs user answers
+Load incorrect items → ReviewScreen state initialization
+                                   ↓
+Unified navigation → Display appropriate review content
+                                   ↓
+Quiz: Correct vs user answers | Typing: Word details và retry option
 ```
 
 ---
@@ -486,7 +573,16 @@ The singleton pattern cho state management, combined với explicit memory manag
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: September 13, 2025  
+**Document Version**: 1.1  
+**Last Updated**: September 21, 2025  
 **Flutter Version**: 3.35.3  
 **Target Platform**: Windows Desktop
+
+### 📋 Recent Updates (v1.1)
+
+- ⌨️ **Typing Test System**: Complete implementation với real-time feedback
+- 🔍 **Enhanced Review System**: Support cho both quiz và typing test review
+- 📊 **Unified Results**: Single results screen cho multiple test types
+- 🎯 **Test Status Management**: Independent tracking của quiz và typing test completion
+- 📱 **Improved Responsive Design**: Enhanced layout stability và overflow fixes
+- 🔧 **Better Memory Management**: Optimized session handling và disposal patterns

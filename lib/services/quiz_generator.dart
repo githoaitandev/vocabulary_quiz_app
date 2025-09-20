@@ -8,23 +8,41 @@ class QuizGenerator {
   /// [vocabularyItems] - Danh sách từ vựng
   /// [questionCount] - Số câu hỏi muốn tạo
   /// [wordToMeaningRatio] - Tỷ lệ câu hỏi Word→Meaning (0.0 - 1.0)
+  /// [preferUntested] - Ưu tiên từ chưa test (default: true)
   static List<Question> generateQuiz({
     required List<VocabularyItem> vocabularyItems,
     required int questionCount,
     double wordToMeaningRatio = 0.5, // 50% Word→Meaning, 50% Meaning→Word
+    bool preferUntested = true,
   }) {
-    if (vocabularyItems.length < 4) {
-      throw Exception('Need at least 4 vocabulary items to generate quiz');
+    // Filter to prefer quiz-untested vocabulary
+    List<VocabularyItem> availableItems = vocabularyItems;
+    if (preferUntested) {
+      final quizUntestedItems = vocabularyItems.where((item) => !item.isQuizTested).toList();
+      if (quizUntestedItems.isNotEmpty) {
+        availableItems = quizUntestedItems;
+      }
+      // If no quiz-untested items, fall back to all items
+    }
+    
+    // Check if we have any vocabulary at all
+    if (vocabularyItems.isEmpty) {
+      throw Exception('Need at least 1 vocabulary item to generate quiz');
+    }
+    
+    // Check if we have any items available for questions
+    if (availableItems.isEmpty) {
+      throw Exception('No vocabulary items available for quiz');
     }
 
-    if (questionCount > vocabularyItems.length) {
-      questionCount = vocabularyItems.length;
+    if (questionCount > availableItems.length) {
+      questionCount = availableItems.length;
     }
 
     List<Question> questions = [];
     
     // Shuffle vocabulary để random
-    List<VocabularyItem> shuffledVocab = List.from(vocabularyItems)..shuffle(_random);
+    List<VocabularyItem> shuffledVocab = List.from(availableItems)..shuffle(_random);
     
     // Tính số câu hỏi cho mỗi loại
     int wordToMeaningCount = (questionCount * wordToMeaningRatio).round();
@@ -34,7 +52,7 @@ class QuizGenerator {
     for (int i = 0; i < wordToMeaningCount && i < shuffledVocab.length; i++) {
       Question question = _createWordToMeaningQuestion(
         shuffledVocab[i], 
-        vocabularyItems,
+        vocabularyItems, // Use full vocabulary list for wrong answers
       );
       questions.add(question);
     }
@@ -43,7 +61,7 @@ class QuizGenerator {
     for (int i = wordToMeaningCount; i < questionCount && i < shuffledVocab.length; i++) {
       Question question = _createMeaningToWordQuestion(
         shuffledVocab[i], 
-        vocabularyItems,
+        vocabularyItems, // Use full vocabulary list for wrong answers
       );
       questions.add(question);
     }
@@ -59,7 +77,7 @@ class QuizGenerator {
     VocabularyItem correctItem,
     List<VocabularyItem> allItems,
   ) {
-    // Lấy 3 đáp án sai
+    // Lấy tối đa 3 đáp án sai (có thể ít hơn nếu không đủ vocabulary)
     List<String> wrongAnswers = _getRandomMeanings(correctItem, allItems, 3);
     
     // Tạo danh sách tất cả đáp án
@@ -81,7 +99,7 @@ class QuizGenerator {
     VocabularyItem correctItem,
     List<VocabularyItem> allItems,
   ) {
-    // Lấy 3 đáp án sai
+    // Lấy tối đa 3 đáp án sai (có thể ít hơn nếu không đủ vocabulary, thậm chí 0)
     List<String> wrongAnswers = _getRandomWords(correctItem, allItems, 3);
     
     // Tạo danh sách tất cả đáp án
@@ -110,6 +128,7 @@ class QuizGenerator {
         .toList();
 
     meanings.shuffle(_random);
+    // Take only what's available, even if less than requested count
     return meanings.take(count).toList();
   }
 
@@ -125,6 +144,7 @@ class QuizGenerator {
         .toList();
 
     words.shuffle(_random);
+    // Take only what's available, even if less than requested count
     return words.take(count).toList();
   }
 
@@ -132,21 +152,54 @@ class QuizGenerator {
   static List<Question> generateCustomQuiz({
     required List<VocabularyItem> vocabularyItems,
     required QuizConfig config,
+    bool preferUntested = true,
   }) {
     return generateQuiz(
       vocabularyItems: vocabularyItems,
       questionCount: config.questionCount,
       wordToMeaningRatio: config.wordToMeaningRatio,
+      preferUntested: preferUntested,
     );
   }
 
   /// Validate có thể tạo quiz không
-  static bool canGenerateQuiz(List<VocabularyItem> vocabularyItems, int questionCount) {
-    return vocabularyItems.length >= 4 && questionCount > 0;
+  static bool canGenerateQuiz(List<VocabularyItem> vocabularyItems, int questionCount, {bool preferUntested = true}) {
+    // Check if we have enough total vocabulary for wrong answers (need at least 1 total for minimal quiz)
+    if (vocabularyItems.isEmpty) {
+      return false;
+    }
+    
+    // Check if we have available items for questions
+    List<VocabularyItem> availableItems = vocabularyItems;
+    if (preferUntested) {
+      final quizUntestedItems = vocabularyItems.where((item) => !item.isQuizTested).toList();
+      if (quizUntestedItems.isNotEmpty) {
+        availableItems = quizUntestedItems;
+      }
+    }
+    return availableItems.isNotEmpty && questionCount > 0;
   }
 
   /// Lấy số câu hỏi tối đa có thể tạo
-  static int getMaxQuestionCount(List<VocabularyItem> vocabularyItems) {
+  static int getMaxQuestionCount(List<VocabularyItem> vocabularyItems, {bool preferUntested = true}) {
+    List<VocabularyItem> availableItems = vocabularyItems;
+    if (preferUntested) {
+      final quizUntestedItems = vocabularyItems.where((item) => !item.isQuizTested).toList();
+      if (quizUntestedItems.isNotEmpty) {
+        availableItems = quizUntestedItems;
+      }
+    }
+    return availableItems.length;
+  }
+  
+  /// Get available vocabulary count for quiz generation
+  static int getAvailableVocabularyCount(List<VocabularyItem> vocabularyItems, {bool preferUntested = true}) {
+    if (preferUntested) {
+      final quizUntestedItems = vocabularyItems.where((item) => !item.isQuizTested).toList();
+      if (quizUntestedItems.isNotEmpty) {
+        return quizUntestedItems.length;
+      }
+    }
     return vocabularyItems.length;
   }
 }

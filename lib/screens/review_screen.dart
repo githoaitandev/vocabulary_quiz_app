@@ -12,28 +12,49 @@ class ReviewScreen extends StatefulWidget {
 class _ReviewScreenState extends State<ReviewScreen> {
   AppState get appState => AppState();
   QuizSession? get quizSession => appState.currentQuizSession;
+  TypingTestSession? get typingTestSession => appState.currentTypingTestSession;
   
   int _currentReviewIndex = 0;
   late List<int> _incorrectIndices;
+  late bool _isTypingTestReview;
 
   @override
   void initState() {
     super.initState();
-    if (quizSession == null || !quizSession!.isCompleted) {
-      // No completed quiz session, navigate back
+    
+    // Check if we have typing test session first, then quiz session
+    if (typingTestSession != null && typingTestSession!.isCompleted) {
+      _isTypingTestReview = true;
+      _incorrectIndices = _getTypingTestIncorrectIndices();
+    } else if (quizSession != null && quizSession!.isCompleted) {
+      _isTypingTestReview = false;
+      _incorrectIndices = quizSession!.incorrectQuestionIndices;
+    } else {
+      // No completed session, navigate back
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pop();
       });
       return;
     }
     
-    _incorrectIndices = quizSession!.incorrectQuestionIndices;
     if (_incorrectIndices.isEmpty) {
       // No incorrect answers, navigate back
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pop();
       });
     }
+  }
+
+  List<int> _getTypingTestIncorrectIndices() {
+    if (typingTestSession == null) return [];
+    
+    List<int> indices = [];
+    for (int i = 0; i < typingTestSession!.questions.length; i++) {
+      if (typingTestSession!.questions[i].status == TypingQuestionStatus.incorrect) {
+        indices.add(i);
+      }
+    }
+    return indices;
   }
 
   void _nextIncorrectQuestion() async {
@@ -70,6 +91,128 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 
   Widget _buildReviewCard() {
+    if (_isTypingTestReview) {
+      return _buildTypingTestReviewCard();
+    } else {
+      return _buildQuizReviewCard();
+    }
+  }
+
+  Widget _buildTypingTestReviewCard() {
+    final questionIndex = _incorrectIndices[_currentReviewIndex];
+    final question = typingTestSession!.questions[questionIndex];
+
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header with question number
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.red[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Question ${questionIndex + 1}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.red[700],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.purple[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Typing Test',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.purple[700],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Meaning
+            Text(
+              'Meaning:',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[700],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              question.meaning,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            
+            // Example if available
+            if (question.example != null && question.example!.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Text(
+                'Example:',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[700],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                question.example!,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+            
+            const SizedBox(height: 24),
+            
+            // Your answer (incorrect)
+            _buildAnswerSection(
+              'Your Answer:',
+              question.userAnswer.isEmpty ? '(No answer)' : question.userAnswer,
+              Colors.red,
+              Icons.close,
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Correct answer
+            _buildAnswerSection(
+              'Correct Answer:',
+              question.correctWord,
+              Colors.green,
+              Icons.check,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuizReviewCard() {
     final questionIndex = _incorrectIndices[_currentReviewIndex];
     final question = quizSession!.questions[questionIndex];
     final userAnswer = quizSession!.userAnswers[questionIndex];
@@ -295,6 +438,44 @@ class _ReviewScreenState extends State<ReviewScreen> {
     );
   }
 
+  Widget _buildAnswerSection(String title, String answer, Color color, IconData icon) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        border: Border.all(color: color.withOpacity(0.3)),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            answer,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildNavigationButtons() {
     final isFirst = _currentReviewIndex == 0;
     final isLast = _currentReviewIndex == _incorrectIndices.length - 1;
@@ -332,7 +513,15 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (quizSession == null || !quizSession!.isCompleted || _incorrectIndices.isEmpty) {
+    // Check if we have any session to review
+    bool hasSessionToReview = false;
+    if (_isTypingTestReview) {
+      hasSessionToReview = typingTestSession != null && typingTestSession!.isCompleted;
+    } else {
+      hasSessionToReview = quizSession != null && quizSession!.isCompleted;
+    }
+    
+    if (!hasSessionToReview || _incorrectIndices.isEmpty) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -340,7 +529,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Review Incorrect Answers'),
+        title: Text(_isTypingTestReview ? 'Review Typing Test' : 'Review Quiz'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

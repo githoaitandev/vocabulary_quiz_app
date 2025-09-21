@@ -30,6 +30,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   bool _isCorrect = false;
   String _feedbackMessage = '';
   Color _feedbackColor = Colors.green;
+  bool _isProcessingAnswer = false; // Disable submit during processing
 
   @override
   void initState() {
@@ -83,10 +84,15 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   }
 
   void _submitAnswer() async {
-    if (session == null) return;
+    if (session == null || _isProcessingAnswer) return;
 
     final answer = _answerController.text.trim();
     if (answer.isEmpty) return;
+
+    // Set processing state to disable further submissions
+    setState(() {
+      _isProcessingAnswer = true;
+    });
 
     // Submit answer
     final isCorrect = session!.submitCurrentAnswer(answer);
@@ -130,10 +136,14 @@ class _TypingTestScreenState extends State<TypingTestScreen>
       // Move to next question
       session!.nextQuestion();
       _updateProgressAnimation();
-      setState(() {});
+      setState(() {
+        _isProcessingAnswer = false; // Re-enable submit for next question
+      });
       
-      // Refocus input
-      _answerFocusNode.requestFocus();
+      // Auto focus input field after UI rebuild
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _answerFocusNode.requestFocus();
+      });
     }
   }
 
@@ -155,7 +165,12 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   }
 
   void _skipQuestion() {
-    if (session == null) return;
+    if (session == null || _isProcessingAnswer) return;
+
+    // Set processing state to disable further submissions
+    setState(() {
+      _isProcessingAnswer = true;
+    });
 
     // Submit empty answer (will be marked incorrect)
     session!.submitCurrentAnswer('');
@@ -173,10 +188,14 @@ class _TypingTestScreenState extends State<TypingTestScreen>
       // Move to next question
       session!.nextQuestion();
       _updateProgressAnimation();
-      setState(() {});
+      setState(() {
+        _isProcessingAnswer = false; // Re-enable submit for next question
+      });
       
-      // Refocus input
-      _answerFocusNode.requestFocus();
+      // Auto focus input field after UI rebuild
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _answerFocusNode.requestFocus();
+      });
     }
   }
 
@@ -303,15 +322,18 @@ class _TypingTestScreenState extends State<TypingTestScreen>
             TextField(
               controller: _answerController,
               focusNode: _answerFocusNode,
+              enabled: !_isProcessingAnswer, // Disable during processing
               decoration: InputDecoration(
-                hintText: 'Type the English word here...',
+                hintText: _isProcessingAnswer 
+                    ? 'Processing...' 
+                    : 'Type the English word here...',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 prefixIcon: const Icon(Icons.keyboard),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.clear),
-                  onPressed: () {
+                  onPressed: _isProcessingAnswer ? null : () {
                     _answerController.clear();
                   },
                 ),
@@ -329,18 +351,30 @@ class _TypingTestScreenState extends State<TypingTestScreen>
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _submitAnswer,
+                    onPressed: _isProcessingAnswer ? null : _submitAnswer,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: _isProcessingAnswer 
+                          ? Colors.grey 
+                          : Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check),
-                        SizedBox(width: 8),
-                        Text('Submit'),
+                        if (_isProcessingAnswer)
+                          const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        else
+                          const Icon(Icons.check),
+                        const SizedBox(width: 8),
+                        Text(_isProcessingAnswer ? 'Processing...' : 'Submit'),
                       ],
                     ),
                   ),
@@ -349,7 +383,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
                 const SizedBox(width: 12),
                 
                 OutlinedButton(
-                  onPressed: _skipQuestion,
+                  onPressed: _isProcessingAnswer ? null : _skipQuestion,
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -362,7 +396,9 @@ class _TypingTestScreenState extends State<TypingTestScreen>
 
             // Hint text
             Text(
-              'Press Enter to submit or use the button above',
+              _isProcessingAnswer 
+                  ? 'Please wait while processing your answer...'
+                  : 'Press Enter to submit or use the button above',
               style: Theme.of(context).textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),

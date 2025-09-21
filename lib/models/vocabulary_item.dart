@@ -95,6 +95,7 @@ class VocabularyItem {
     _lastTypingTestedAt = DateTime.now();
     _typingTestCount++;
     
+    final oldStatus = _testStatus;
     switch (_testStatus) {
       case VocabularyTestStatus.untested:
         _testStatus = VocabularyTestStatus.typingTested;

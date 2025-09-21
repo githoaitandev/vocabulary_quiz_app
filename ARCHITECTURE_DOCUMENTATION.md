@@ -10,6 +10,7 @@
 6. [Key Components](#key-components)
 7. [Dependencies](#dependencies)
 8. [Development Notes](#development-notes)
+9. [Release Notes](#release-notes)
 
 ---
 
@@ -562,6 +563,40 @@ Quiz: Correct vs user answers | Typing: Word details và retry option
 - **UI Responsiveness**: Ensure smooth animations và transitions
 - **File Operations**: Async file handling để prevent UI blocking
 - **Quiz Generation**: Optimize algorithm cho large vocabulary sets
+
+---
+
+## 📋 Release Notes
+
+### 🌟 New Features (Version 1.2.0)
+
+1. **Quiz Results Screen Refactor**
+
+   - Separated quiz and typing test results into distinct screens.
+   - Added detailed performance analytics for both quiz and typing tests.
+
+2. **Enhanced Typing Test**
+
+   - Added real-time feedback for typing accuracy.
+   - Improved scoring system with detailed breakdowns.
+
+3. **Custom Audio Feedback**
+
+   - Support for custom audio files for correct, incorrect, and completion sounds.
+   - Added fallback to system sounds if custom files are unavailable.
+
+4. **Improved Import Functionality**
+
+   - Enhanced file parsing with better error handling.
+   - Support for flexible formats including examples.
+
+5. **Responsive Design**
+
+   - Optimized layout for wide and narrow screens.
+   - Adaptive font sizes and spacing for better usability.
+
+6. **Keyboard Shortcuts**
+   - Added shortcuts for faster navigation in quizzes and typing tests.
 
 ---
 

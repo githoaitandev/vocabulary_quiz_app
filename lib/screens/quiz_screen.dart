@@ -4,7 +4,7 @@ import 'dart:async';
 import '../models/models.dart';
 import '../services/services.dart';
 import 'home_screen.dart';
-import 'results_screen.dart';
+import 'quiz_results_screen.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -140,12 +140,12 @@ class _QuizScreenState extends State<QuizScreen> {
     // Navigate to results screen
     if (!mounted) return;
     try {
-      Navigator.of(context).pushReplacementNamed('/results');
+      Navigator.of(context).pushReplacementNamed('/quiz-results');
     } catch (e) {
       // Fallback: if named route fails, use direct route
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const ResultsScreen()),
+          MaterialPageRoute(builder: (context) => const QuizResultsScreen()),
         );
       }
     }

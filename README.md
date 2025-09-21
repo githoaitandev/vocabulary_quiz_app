@@ -640,3 +640,30 @@ Nếu bạn muốn đóng góp hoặc báo lỗi:
 - 📊 Unified Results Display
 - 🎯 Independent Test Status Management
 - 📱 Improved Responsive Design và Layout Stability
+
+## 📋 Release Notes
+
+### 🌟 New Features (Version 1.2.0)
+
+1. **Quiz Results Screen Refactor**
+   - Separated quiz and typing test results into distinct screens.
+   - Added detailed performance analytics for both quiz and typing tests.
+
+2. **Enhanced Typing Test**
+   - Added real-time feedback for typing accuracy.
+   - Improved scoring system with detailed breakdowns.
+
+3. **Custom Audio Feedback**
+   - Support for custom audio files for correct, incorrect, and completion sounds.
+   - Added fallback to system sounds if custom files are unavailable.
+
+4. **Improved Import Functionality**
+   - Enhanced file parsing with better error handling.
+   - Support for flexible formats including examples.
+
+5. **Responsive Design**
+   - Optimized layout for wide and narrow screens.
+   - Adaptive font sizes and spacing for better usability.
+
+6. **Keyboard Shortcuts**
+   - Added shortcuts for faster navigation in quizzes and typing tests.

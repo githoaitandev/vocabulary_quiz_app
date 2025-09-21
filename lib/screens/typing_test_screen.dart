@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../services/services.dart';
 import '../widgets/common_widgets.dart';
-import 'results_screen.dart';
+import 'typing_results_screen.dart';
 
 class TypingTestScreen extends StatefulWidget {
   const TypingTestScreen({super.key});
@@ -148,7 +148,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const ResultsScreen(),
+          builder: (context) => const TypingResultsScreen(),
         ),
       );
     }

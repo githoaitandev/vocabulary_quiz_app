@@ -278,5 +278,21 @@ void dispose() {
 
 ---
 
+## 📚 Refactor Notes
+
+### 1. Quiz Results Screen Refactor (Version 1.2.0)
+
+**⚠️ Issue**: Unified results screen caused confusion between quiz and typing test results.
+
+**✅ Solution**:
+
+- Separated quiz and typing test results into distinct screens.
+- Added detailed performance analytics for both quiz and typing tests.
+
+**📚 Lessons Learned**:
+
+- Clear separation of concerns improves user experience.
+- Detailed analytics provide better insights for users.
+
 _Last Updated: ${DateTime.now().toString().split(' ')[0]}_
 _Maintained by: Development Team_

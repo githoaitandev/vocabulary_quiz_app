@@ -50,3 +50,5 @@ app.*.map.json
 windows/flutter/generated_plugin_registrant.cc
 windows/flutter/generated_plugin_registrant.h
 windows/flutter/generated_plugins.cmake
+essay/list_vocab_with_meaning
+essay/list_vocab.txt

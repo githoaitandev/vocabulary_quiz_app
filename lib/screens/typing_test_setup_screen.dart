@@ -144,7 +144,8 @@ class _TypingTestSetupScreenState extends State<TypingTestSetupScreen> {
   Widget build(BuildContext context) {
     final vocabularyCount = appState.vocabularyCount;
     final availableCount = TypingTestGenerator.getMaxQuestionCount(appState.vocabularyList, preferUntested: true);
-    final canStart = availableCount > 0 && _questionCount > 0;
+    final hasUntestedWords = appState.vocabularyList.where((item) => !item.isTypingTested).isNotEmpty;
+    final canStart = availableCount > 0 && _questionCount > 0 && hasUntestedWords;
 
     return Scaffold(
       appBar: AppBar(
@@ -206,6 +207,34 @@ class _TypingTestSetupScreenState extends State<TypingTestSetupScreen> {
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 fontStyle: FontStyle.italic,
                                 color: Colors.orange,
+                              ),
+                            ),
+                          ],
+                          // Show reset message if all words are typing tested
+                          if (appState.vocabularyList.where((item) => !item.isTypingTested).isEmpty) ...[
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'All vocabulary has been typing tested. Consider resetting typing status to practice untested words.',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.orange[700],
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -381,7 +410,7 @@ class _TypingTestSetupScreenState extends State<TypingTestSetupScreen> {
                   ElevatedButton(
                     onPressed: canStart ? _startTypingTest : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: canStart ? Theme.of(context).primaryColor : Colors.grey,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(

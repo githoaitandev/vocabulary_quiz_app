@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
-import 'screens/results_screen.dart';
 import 'screens/review_screen.dart';
 import 'services/audio_service.dart';
 import 'models/app_state.dart';
@@ -57,7 +56,6 @@ class VocabularyQuizApp extends StatelessWidget {
       ),
       home: const HomeScreen(),
       routes: {
-        '/results': (context) => const ResultsScreen(),
         '/review': (context) => const ReviewScreen(),
       },
       debugShowCheckedModeBanner: false,

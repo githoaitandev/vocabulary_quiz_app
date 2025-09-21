@@ -55,8 +55,11 @@ class AppState {
 
   /// Tạo quiz session mới
   void startNewQuizSession(List<Question> questions) {
-    // Dispose session cũ nếu có
+    // Clean up any existing sessions
     _currentQuizSession?.dispose();
+    _currentTypingTestSession?.dispose();
+    _currentTypingTestSession = null;
+    
     _currentQuizSession = QuizSession(questions: questions);
   }
 
@@ -68,8 +71,11 @@ class AppState {
 
   /// Tạo typing test session mới
   void startNewTypingTestSession(TypingTestSession session) {
-    // Dispose session cũ nếu có
+    // Clean up any existing sessions
     _currentTypingTestSession?.dispose();
+    _currentQuizSession?.dispose();
+    _currentQuizSession = null;
+    
     _currentTypingTestSession = session;
   }
 
@@ -152,6 +158,28 @@ class AppState {
       // Find the actual item in our list and mark it
       final index = _vocabularyList.indexWhere((vocabItem) => 
           vocabItem.word == item.word && vocabItem.meaning == item.meaning);
+      if (index != -1) {
+        _vocabularyList[index].markTypingTested();
+      }
+    }
+  }
+  
+  /// Mark vocabulary items as quiz tested only if answered correctly
+  void markVocabularyQuizTestedIfCorrect(List<VocabularyItem> correctItems) {
+    for (final item in correctItems) {
+      final index = _vocabularyList.indexWhere((vocabItem) => 
+          vocabItem.word == item.word && vocabItem.meaning == item.meaning);
+      if (index != -1) {
+        _vocabularyList[index].markQuizTested();
+      }
+    }
+  }
+  
+  /// Mark vocabulary items as typing tested only if typed correctly
+  void markVocabularyTypingTestedIfCorrect(List<VocabularyItem> correctItems) {
+    for (final item in correctItems) {
+      final index = _vocabularyList.indexWhere((vocabItem) => 
+          vocabItem.word.trim() == item.word.trim() && vocabItem.meaning.trim() == item.meaning.trim());
       if (index != -1) {
         _vocabularyList[index].markTypingTested();
       }

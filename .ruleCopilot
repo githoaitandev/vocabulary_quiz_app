@@ -1,0 +1,20 @@
+## MUST
+
+### Request and Analyze stage
+
+- Before implementation or update any code, you MUST analyze, describe the problem, solution and impact in detail.
+- Only update the code if I approved the analysis and solution.
+
+### Implementation stage
+
+- Reusable code MUST be preferred over new code.
+- Clean code is a priority.
+- Ensure the code is efficient and optimized.
+- Contain comments explaining complex logic.
+- Check impact and usage dependency before any update.
+- Notice the syntax and style of the existing codebase.
+- You MUST write clean, maintainable, and well-documented code.
+
+### Release stage
+
+Please build and release the Flutter app. Update the version in pubspec.yaml to the next release version. Build the app for the Windows platform, package it for release, and export all necessary files (including the executable and dependencies) to a folder named VocabularyQuizApp_v[version]\_Release in the VocabularyBuilder directory. Ensure all assets and dependencies are included.

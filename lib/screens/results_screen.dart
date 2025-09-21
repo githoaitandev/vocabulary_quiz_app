@@ -21,6 +21,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
   @override
   void initState() {
     super.initState();
+    
     if (!isQuizResult && !isTypingTestResult) {
       // No completed session, navigate back
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -34,40 +35,50 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
   void _markVocabularyAsTested() {
     if (isQuizResult && quizSession != null) {
-      // Mark vocabulary used in quiz as tested
-      final usedVocabulary = _getVocabularyFromQuiz(quizSession!);
-      appState.markVocabularyQuizTested(usedVocabulary);
+      // Mark only correctly answered vocabulary as tested
+      final correctVocabulary = _getCorrectVocabularyFromQuiz(quizSession!);
+      appState.markVocabularyQuizTestedIfCorrect(correctVocabulary);
     } else if (isTypingTestResult && typingTestSession != null) {
-      // Mark vocabulary used in typing test as tested
-      final usedVocabulary = _getVocabularyFromTypingTest(typingTestSession!);
-      appState.markVocabularyTypingTested(usedVocabulary);
+      // Mark only correctly typed vocabulary as tested
+      final correctVocabulary = _getCorrectVocabularyFromTypingTest(typingTestSession!);
+      appState.markVocabularyTypingTestedIfCorrect(correctVocabulary);
     }
   }
 
-  List<VocabularyItem> _getVocabularyFromQuiz(QuizSession session) {
-    return session.questions.map((question) {
-      if (question.type == QuestionType.wordToMeaning) {
-        return VocabularyItem(
-          word: question.questionText,
-          meaning: question.correctAnswer,
-        );
-      } else {
-        return VocabularyItem(
-          word: question.correctAnswer,
-          meaning: question.questionText,
-        );
+  List<VocabularyItem> _getCorrectVocabularyFromQuiz(QuizSession session) {
+    List<VocabularyItem> correctItems = [];
+    for (int i = 0; i < session.questions.length; i++) {
+      if (i < session.userAnswers.length && session.questions[i].isCorrect(session.userAnswers[i] ?? '')) {
+        final question = session.questions[i];
+        if (question.type == QuestionType.wordToMeaning) {
+          correctItems.add(VocabularyItem(
+            word: question.questionText,
+            meaning: question.correctAnswer,
+          ));
+        } else {
+          correctItems.add(VocabularyItem(
+            word: question.correctAnswer,
+            meaning: question.questionText,
+          ));
+        }
       }
-    }).toList();
+    }
+    return correctItems;
   }
 
-  List<VocabularyItem> _getVocabularyFromTypingTest(TypingTestSession session) {
-    return session.questions.map((typingQuestion) {
-      return VocabularyItem(
-        word: typingQuestion.correctWord,
-        meaning: typingQuestion.meaning,
-        example: typingQuestion.example,
-      );
-    }).toList();
+  List<VocabularyItem> _getCorrectVocabularyFromTypingTest(TypingTestSession session) {
+    List<VocabularyItem> correctItems = [];
+    for (final question in session.questions) {
+      // Only mark as tested if the typing was correct
+      if (question.status == TypingQuestionStatus.correct) {
+        correctItems.add(VocabularyItem(
+          word: question.correctWord,
+          meaning: question.meaning,
+          example: question.example,
+        ));
+      }
+    }
+    return correctItems;
   }
 
   void _startNewQuiz() async {
@@ -90,40 +101,40 @@ class _ResultsScreenState extends State<ResultsScreen> {
     );
   }
 
-  // Helper methods for getting results data
+  // Helper methods for getting results data - Priority: Typing test first
   int get totalQuestions {
-    if (isQuizResult) return quizSession!.questions.length;
     if (isTypingTestResult) return typingTestSession!.totalQuestions;
+    if (isQuizResult) return quizSession!.questions.length;
     return 0;
   }
 
   int get correctCount {
-    if (isQuizResult) return quizSession!.correctCount;
     if (isTypingTestResult) return typingTestSession!.correctCount;
+    if (isQuizResult) return quizSession!.correctCount;
     return 0;
   }
 
   int get incorrectCount {
-    if (isQuizResult) return quizSession!.incorrectQuestionIndices.length;
     if (isTypingTestResult) return typingTestSession!.incorrectCount;
+    if (isQuizResult) return quizSession!.incorrectQuestionIndices.length;
     return 0;
   }
 
   double get accuracyPercentage {
-    if (isQuizResult) return quizSession!.accuracyPercentage;
     if (isTypingTestResult) return typingTestSession!.accuracyPercentage;
+    if (isQuizResult) return quizSession!.accuracyPercentage;
     return 0.0;
   }
 
   Duration? get testDuration {
-    if (isQuizResult) return quizSession!.completionTime;
     if (isTypingTestResult) return typingTestSession!.testDuration;
+    if (isQuizResult) return quizSession!.completionTime;
     return null;
   }
 
   String get testType {
-    if (isQuizResult) return 'Quiz';
     if (isTypingTestResult) return 'Typing Test';
+    if (isQuizResult) return 'Quiz';
     return 'Test';
   }
 

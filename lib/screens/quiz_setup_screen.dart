@@ -144,6 +144,34 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                         color: appState.vocabularyList.where((item) => !item.isQuizTested).isNotEmpty ? Colors.blue : Colors.orange,
                       ),
                     ),
+                    // Show reset message if all words are tested
+                    if (appState.vocabularyList.where((item) => !item.isQuizTested).isEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'All vocabulary has been quiz tested. Consider resetting quiz status to practice untested words.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.orange[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -327,9 +355,9 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
             
             // Generate button
             ElevatedButton(
-              onPressed: _isGenerating ? null : _generateQuiz,
+              onPressed: (_isGenerating || appState.vocabularyList.where((item) => !item.isQuizTested).isEmpty) ? null : _generateQuiz,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: appState.vocabularyList.where((item) => !item.isQuizTested).isEmpty ? Colors.grey : Theme.of(context).primaryColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
